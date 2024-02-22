@@ -4,32 +4,47 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${ROOT_PASSWORD}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.backend.rule=Host(`s144272.devops-ap.be`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.backend.rule=Host(`${HOSTNAME}`) && PathPrefix(`/api`)"
       - "traefik.http.routers.backend.tls=true"
       - "traefik.http.routers.backend.tls.certresolver=letsencrypt"
     restart: always
     networks:
       - proxy
+      - database
 
-  
   frontend:
     image: nginx:1.22
     volumes:
-      - ./frontend/dist/frontend:/usr/share/nginx/html:ro  # Map Angular build artifacts
+      - ./frontend/dist/frontend:/usr/share/nginx/html:ro # Map Angular build artifacts
     labels:
       - "traefik.http.routers.frontend.entrypoints=websecure"
-      - "traefik.http.routers.frontend.rule=Host(`s144272.devops-ap.be`) && !PathPrefix(`/api`)"
+      - "traefik.http.routers.frontend.rule=Host(`${HOSTNAME}`) && !PathPrefix(`/api`)"
       - "traefik.http.routers.frontend.tls=true"
       - "traefik.http.routers.frontend.tls.certresolver=letsencrypt"
     networks:
       - proxy
-  
 
+  db:
+    image: mongo:4.4
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${ROOT_PASSWORD}
+    volumes:
+      - filtrr-db:/data/db
+    networks:
+      - database
 
+volumes:
+  filtrr-db:
 
 networks:
   proxy:
     external: true
     name: traefik
+  database:
