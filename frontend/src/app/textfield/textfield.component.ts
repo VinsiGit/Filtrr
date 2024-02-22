@@ -8,13 +8,21 @@ import { PostService } from '../post.service';
   styleUrls: ['./textfield.component.css']
 })
 export class TextfieldComponent {
+  input: string = "";
   text: string = "";
+  textBoxResponse: any;
 
   constructor(private route: ActivatedRoute, private post: PostService) {
 
   }
   async submitText() {
-    await this.post.postMail(this.text);
-    this.text = "";
+    try {
+      const response = await this.post.postMail(this.input);
+      this.textBoxResponse = response;
+      this.text = this.input;
+      console.log('Response content:', this.textBoxResponse);
+    } catch (error) {
+      console.error('Error occurred:', error);
+    }
   }
 }
