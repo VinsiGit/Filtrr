@@ -5,6 +5,8 @@ from pymongo import MongoClient
 import os
 from flask import request
 from flask_cors import CORS
+from flask import jsonify
+from flask import response
 
 # Get the MongoDB connection details from environment variables
 mongo_host = os.environ.get('MONGO_HOST', 'db')
@@ -42,8 +44,11 @@ def add_site():
 
     # Add the data to the database
     db.site.insert_one(data)
+    response(code=200, message='mail received')
 
-    return 'mail received'
+    with open('classifications.json', 'r') as file:
+        content = json.load(file)
+    return content
 
 @app.route('/api/addin')
 def addin():
