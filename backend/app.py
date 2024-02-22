@@ -4,6 +4,7 @@ import json
 from pymongo import MongoClient
 import os
 from flask import request
+from flask_cors import CORS
 
 # Get the MongoDB connection details from environment variables
 mongo_host = os.environ.get('MONGO_HOST', 'db')
@@ -18,6 +19,7 @@ client = MongoClient(host=mongo_host, port=mongo_port, username=mongo_username, 
 db = client['filtrr_db']
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/api')
 def hello():
