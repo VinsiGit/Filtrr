@@ -26,7 +26,7 @@ def hello():
 @app.route('/api/site')
 def site():
     # Get the data from the database
-    data = db.site.find_one()
+    data = list(db.site.find())
 
     # Convert the data to JSON
     response = json.dumps(data, default=str)
