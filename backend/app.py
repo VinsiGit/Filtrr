@@ -50,7 +50,13 @@ def add_site():
 
 @app.route('/api/addin')
 def addin():
-    return 'Addin endpoint'
+    # Get the data from the database
+    data = list(db.site.find())
+    
+    # Convert the data to JSON
+    response = json.dumps(data, default=str)
+
+    return response
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
