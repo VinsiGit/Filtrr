@@ -256,15 +256,14 @@ def ner_parallel(mails):
 
 
 output_results = ner_parallel(mails)
-print(output_results)
 json_data = {}
 
 for i, result in enumerate(output_results, 1):
     #print_memory_usage()
     keywords = []
     for entity in result['entities']:
+        #add only entities with a certainty above 85%
         if(entity['score'] > 0.85):
-            print(f"{entity}\n")
             keywords.append({'word': entity['word'], 'score': entity['score']})
     json_data[f'mail_{i}'] = {'title': result['title'], 'keywords': keywords}
 
