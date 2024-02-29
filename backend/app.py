@@ -24,7 +24,7 @@ CORS(app)
 
 @app.route('/api')
 def hello():
-    return 'Filtrr api'
+    return 'Filtrr api 123'
 
 @app.route('/api/site')
 def site():
