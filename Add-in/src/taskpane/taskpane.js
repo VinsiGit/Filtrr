@@ -96,7 +96,6 @@ export async function display(body) {
   output_body += body + "<br/>";
 
   // Set the innerHTML of the item-info, item-subject and item-body elements
-  // item_dot.innerHTML += output_dot;
   item_info.innerHTML += output_info;
   item_subject.innerHTML += output_subject;
   item_body.innerHTML += output_body;
