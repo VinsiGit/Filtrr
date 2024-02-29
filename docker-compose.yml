@@ -21,7 +21,7 @@ services:
     image: nginx:1.22
     volumes:
       - ./frontend/dist/frontend:/usr/share/nginx/html:ro # Map Angular build artifacts
-      - ./frontend/nginx.conf:/etc/nginx/nginx.conf:ro # Map custom nginx configuration
+      # - ./frontend/nginx.conf:/etc/nginx/nginx.conf:ro # Map custom nginx configuration
     labels:
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.rule=Host(`${HOSTNAME}`) && !PathPrefix(`/api`)"
