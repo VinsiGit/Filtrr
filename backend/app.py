@@ -31,8 +31,7 @@ def site():
     # Get the data from the database
     data = list(db.site.find())
 
-    # Convert the data to JSON
-    response = json.dumps(data, default=str)
+    response = jsonify(data)
 
     return response
 
