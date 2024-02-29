@@ -45,5 +45,3 @@ testem.log
 Thumbs.db
 
 
-Dockerfile
-.dockerignore
