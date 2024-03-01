@@ -1,17 +1,16 @@
-function hashCode(str) {
+
+
+function stringToColorCode(str) {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
       hash = str.charCodeAt(i) + ((hash << 5) - hash);
   }
-  return hash;
-}
 
-function intToRGB(i) {
-  let c = (i & 0x00FFFFFF)
+  let c = (hash & 0x00FFFFFF)
       .toString(16)
       .toUpperCase();
 
-  return "00000".substring(0, 6 - c.length) + c;
+  return "#" + ("00000".substring(0, 6 - c.length) + c);
 }
 
 
@@ -30,18 +29,50 @@ Office.onReady((info) => {
 // This function gets the body of the email in text format
 export async function run() {
   // Get the current item (email)
-  const item = Office.context.mailbox.item;
+  let data={
+    "item_id": "",
+    "sender": "",
+    "sender_email": "",
+    "datetime_received": 0,
+    // "sensitivity": "",
+    "subject": "",
+    "text_body":"",
+    "class":"",
+    "predicted_proba":0
+  }
+  
 
-  item.body.getAsync("text", function(result) {
-    if (result.status === Office.AsyncResultStatus.Succeeded) {
-      // If the operation succeeded, get the body text
-      const body = result.value ;
-      // Call the display function to display the body text
 
-      // downloadEmailBody(body);
-      // sendEmailBodyToServer(body);
-      display(body);
-    }
+  Office.context.mailbox.addHandlerAsync(Office.EventType.ItemChanged, function() {
+
+    // Inside an Office Add-in, Office.context.mailbox.item is the currently selected mail item.
+    let mail = Office.context.mailbox
+    let item = mail.item;
+    data.item_id = item.itemId
+    data.sender = item.sender.displayName;
+    data.sender_email = item.sender.emailAddress;
+    data.datetime_received = item.dateTimeCreated.getTime();
+    data.subject = mail.item.subject
+  
+    
+    item.body.getAsync("text", function(result) {
+      if (result.status === Office.AsyncResultStatus.Succeeded) {
+        data.text_body = result.value ;
+        console.log(data.item_id);
+        // Call the display function to display the body text
+        // downloadEmailBody(body);
+        sendEmailBodyToServer(data).then(new_data => {
+          console.log(new_data[0]);
+          data.class = new_data[0];
+          data.predicted_proba = new_data[1]
+          console.log(data);
+          display(data);  // Move this inside the .then() block
+
+        }).catch(error => {
+          console.error('Error:', error);
+        });        
+      }
+    }); 
   });
 }
 
@@ -66,55 +97,61 @@ export async function downloadEmailBody(body) {
   document.body.removeChild(link);
 } 
 
-export async function display(body) {
-  const item_dot=document.getElementById("item-dot")
-  const item_info=document.getElementById("item-info")
-  const item_subject=document.getElementById("item-subject")
-  const item_body=document.getElementById("item-body")
-
-  // Get the current item (email)
-  const item = Office.context.mailbox.item;
-  // Get the subject of the email
-  const subject = item.subject;
-
-
-  // Create the HTML for the info
-  let output_info = "<b>Subject length:</b> <br/>";
-  output_info += `${subject.length}`+ "<br/>";
-  
-  item_dot.style.backgroundColor = "#" + intToRGB(hashCode(subject));
-
-
-  // Create the HTML for the subject
-  let output_subject = "<b>Subject:</b> <br/>";
-  output_subject += subject + "<br/>";
-
+export async function display(data) {
+  const item_class=document.getElementById("item-class")
+  const item_proba=document.getElementById("item-proba")
+  // const item_subject=document.getElementById("item-subject")
+  // const item_body=document.getElementById("item-body")
 
   
-  // Create the HTML for the body
-  let output_body = "<b>Body:</b> <br/>";
-  output_body += body + "<br/>";
+  // Create the HTML for the Probability
+  console.log(data.predicted_proba);
+  let output_proba = "<b>Probability:</b> <br/>";
+  output_proba += data.predicted_proba + "<br/>";
+
+
+  // Create the HTML for the class
+  console.log(data.class);
+  let output_class = "<b>Class:</b> <br/>";
+  output_class += data.class + "<br/>";
+
+  // // Create the HTML for the subject
+  // let output_subject = "<b>Subject:</b> <br/>";
+  // output_subject += data.subject + "<br/>";
+
+
+  
+  // // Create the HTML for the data
+  // let output_body = "<b>Body:</b> <br/>";
+  // output_body += data.text_body + "<br/>";
 
   // Set the innerHTML of the item-info, item-subject and item-body elements
-  item_info.innerHTML += output_info;
-  item_subject.innerHTML += output_subject;
-  item_body.innerHTML += output_body;
+  item_class.innerHTML = output_class;
+  item_proba.innerHTML = output_proba
+  // item_subject.innerHTML = output_subject;
+  // item_body.innerHTML = output_body;
 }
 
+
 // This function sends the body of the email to a server
-export async function sendEmailBodyToServer(body) {
+export async function sendEmailBodyToServer(data) {
+  // Show the loading screen
+  document.getElementById("loading-screen").style.display = "block";
+
   // Send a POST request to the server
-  const response = await fetch('https://s144272.devops-ap.be/api/site', {
-    method: 'POST', // Specify the method
+  const response = await fetch('http://localhost:9090/', { // https://s144272.devops-ap.be/api/site
+    method: 'POST',
     headers: {
-      'Content-Type': 'application/json', // Indicate that we're sending JSON
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ body: body }), // Convert the body to a JSON string
+    body: JSON.stringify({ body: data.text_body }),
   });
+
+  // Hide the loading screen
+  document.getElementById("loading-screen").style.display = "none";
 
   // Check if the request was successful
   if (!response.ok) {
-    // If the request was not successful, throw an error
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
