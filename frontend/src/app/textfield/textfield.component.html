@@ -1,0 +1,22 @@
+<main>
+    <div class="text_box">
+        <form (ngSubmit)="submitText()" #textForm="ngForm">
+            <div class="tweet_box-input">
+                <textarea rows="4" cols="40" placeholder="What's happening?" name="text" [(ngModel)]="input" required></textarea>
+                <button type="submit" [disabled]="!textForm.form.valid">post</button>
+            </div>
+        </form>
+    </div>
+
+    <div>
+        <div class="anwser" *ngIf="textBoxResponse">
+            <h1>textbox result:</h1>
+            <p>text: {{ this.text }}</p>
+            <p>label: {{ this.textBoxResponse.label }}</p>
+        </div>
+        <h1>addin result</h1>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis, eveniet accusamus, exercitationem beatae alias velit provident sed nemo ad numquam ex veniam suscipit, repudiandae dicta cupiditate inventore tempore assumenda soluta.</p>
+    </div>
+</main>
+
+
