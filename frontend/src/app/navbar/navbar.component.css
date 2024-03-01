@@ -1,49 +1,64 @@
-.navbar {
+  .module {
+    width: 15rem;
+  }
+  
+  .navbar {
     position: fixed;
-    width: 3rem;
-    height: calc(100% - 2rem);
-    background-color: purple;
+    width: 15rem;
+    height: 5rem;
+    background-color: #8972C8;
     border-radius: 1.5rem;
-    transition: width 0.3s;
+    transition: height 0.5s, border-radius 0.3s; /* Added transition for border-radius */
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-top-left-radius: 0; /* Make the top-right corner straight */
+    border-bottom-left-radius: 0; /* Make the bottom-right corner straight */
   }
   
   .navbar:hover {
-    width: 5rem;
+    height: 100%;
+  }
+
+  .logo {
+    top: 2rem;
   }
   
   .navbar ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+    transition: transform 0.3s; /* Added transition for list movement */
   }
   
   .navbar li {
-    text-align: center;
+    width: 15rem;
     margin-bottom: 1rem;
   }
-  
+
   .navbar a {
-    display: flex; 
-    align-items: center;
-    justify-content: center;
-    color: white;
-    text-decoration: none;
-    padding: 1rem;
-  }
-  
-  .navbar a .icon { 
-    font-size: 1.5rem;
-  }
-  
-  .navbar a .text {
     display: none;
   }
   
-  .navbar:hover a .text {
-    display: block;
+  .navbar a .text {
+    opacity: 0;
+    transition: opacity 0.3s ease;
   }
   
-  .navbar a:hover {
-    background-color: #555;
+  .navbar:hover a .text {
+    opacity: 1;
+    padding-left: 1rem;
   }
+
+  .navbar:hover a {
+    display: flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+    padding: 1rem;
+    width: 100%; /* Adjust width to leave space for padding */
+  }
+
+  .navbar a:hover {
+    background-color: #6B599C;
+  }
+  
