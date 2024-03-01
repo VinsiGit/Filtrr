@@ -6,6 +6,7 @@ import re
 import nltk
 nltk.download('stopwords')
 nltk.download('wordnet')
+nltk.download('punkt')
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
@@ -197,94 +198,24 @@ Stefan Meerman
 
 
 #TODO: persoonlijke info uit mail halen
-
-#parse results to json-like list
-def aggregate_span(results):
-    new_results = []
-    current_result = results[0]
-
-    for result in results[1:]:
-        if result["start"] == current_result["end"] + 1:
-            current_result["word"] += " " + result["word"]
-            current_result["end"] = result["end"]
-        else:
-            new_results.append(current_result)
-            current_result = result
-
-    new_results.append(current_result)
-
-    return new_results
-
-#run the model
-def classify_text(mail):
-    start_time_s = time.time()
-    output_skills = token_skill_classifier(mail['content'])
-    for result in output_skills:
-        if result.get("entity_group"):
-            result["entity_type"] = "Skill"
-            del result["entity_group"]
-    end_time_s = time.time()
-    classification_time_s = end_time_s - start_time_s
-
-    start_time_k = time.time()
-    output_knowledge = token_knowledge_classifier(mail['content'])
-    for result in output_knowledge:
-        if result.get("entity_group"):
-            result["entity"] = "Knowledge"
-            del result["entity_group"]
-    end_time_k = time.time()
-    classification_time_k = end_time_k - start_time_k
-
-    if len(output_skills) > 0:
-        output_skills = aggregate_span(output_skills)
-    if len(output_knowledge) > 0:
-        output_knowledge = aggregate_span(output_knowledge)
-    
-    # aggregate skills and knowledge together to one list
-    entities = output_skills + output_knowledge
-
-    return {"title": mail['title'], "text": mail['content'], "entities": entities, "classification_time_skills": classification_time_s, "classification_time_knowledge": classification_time_k}
-
-def ner_parallel(mails):
-    start_time = time.time()
-
-    with ThreadPoolExecutor() as executor:
-        results = list(executor.map(classify_text, mails))
-
-    end_time = time.time()
-    classification_time = end_time - start_time
-    print(f"Total time elapsed for parallel processing: {classification_time}s\n")
-
-    return results
-
 # generalize verbs and remove stopwords
-def postprocess_text(text):
+
+def preprocess_text(text):
     # Initialize WordNet Lemmatizer and stopwords
     lemmatizer = WordNetLemmatizer()
     stop_words_english = set(stopwords.words("english"))
     stop_words_dutch = set(stopwords.words("dutch"))
     
-    # Tokenize the text using custom tokenizer
-    words = re.findall(r'\b\w+\b|\s+', text)
+    # Tokenize the text
+    words = nltk.word_tokenize(text)
     
     # Remove stopwords and lemmatize the words
-    cleaned_words = [lemmatizer.lemmatize(word.lower()) for word in words if word.strip().isalpha() and word.lower().strip() not in stop_words_english.union(stop_words_dutch)]
+    cleaned_words = [lemmatizer.lemmatize(word.lower()) for word in words if word.isalpha() and word.lower() not in stop_words_english.union(stop_words_dutch)]
     
     # Join the cleaned words back into a string
     cleaned_text = ' '.join(cleaned_words)
     
     return cleaned_text
 
-output_results = ner_parallel(mails)
-json_data = {}
 
-for i, result in enumerate(output_results, 1):
-    #print_memory_usage()
-    keywords = []
-    for entity in result['entities']:
-        #add only entities with a certainty above 85%
-        if(entity['score'] > 0.85):
-            keywords.append({'word': postprocess_text(entity['word']), 'score': entity['score']})
-    json_data[f'mail_{i}'] = {'title': result['title'], 'keywords': keywords}
-
-print(json_data)
+print(preprocess_text(mails[0]['content']))
