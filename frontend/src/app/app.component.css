@@ -1,0 +1,11 @@
+.layout {
+    display: flex;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 10px;
+}
+
+router-outlet {
+    padding-left: 6rem;
+}

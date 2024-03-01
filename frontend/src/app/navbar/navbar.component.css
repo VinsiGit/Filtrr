@@ -1,0 +1,49 @@
+.navbar {
+    position: fixed;
+    width: 3rem;
+    height: calc(100% - 2rem);
+    background-color: purple;
+    border-radius: 1.5rem;
+    transition: width 0.3s;
+    overflow: hidden;
+  }
+  
+  .navbar:hover {
+    width: 5rem;
+  }
+  
+  .navbar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .navbar li {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  .navbar a {
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    padding: 1rem;
+  }
+  
+  .navbar a .icon { 
+    font-size: 1.5rem;
+  }
+  
+  .navbar a .text {
+    display: none;
+  }
+  
+  .navbar:hover a .text {
+    display: block;
+  }
+  
+  .navbar a:hover {
+    background-color: #555;
+  }

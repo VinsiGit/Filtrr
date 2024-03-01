@@ -8,12 +8,14 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { PasteinComponent } from './pastein/pastein.component';
 import { HttpClientModule } from '@angular/common/http';
+import { NavbarComponent } from './navbar/navbar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TextfieldComponent,
-    PasteinComponent
+    PasteinComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
