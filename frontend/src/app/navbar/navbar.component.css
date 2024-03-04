@@ -1,9 +1,9 @@
 .module, .navbar, .logo, .navbar li {
-  width: 20rem;
+  width: 15rem;
 }
 
 .navbar, .logo {
-  width: 20rem;
+  width: 15rem;
   height: 6rem;
   background-color: #8972C8;
   display: flex;

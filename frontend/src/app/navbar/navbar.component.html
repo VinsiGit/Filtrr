@@ -5,12 +5,32 @@
             <span>Filtrr</span>
         </div>
         <ul>
-            <li *ngFor="let link of navlinks">
-                <a href="{{ link.url }}">
+            <li>
+                <a [routerLink]="['/dashboard']">
                     <span class="icon">1</span>
-                    <span class="text">{{ link.name }}</span>
+                    <span class="text">dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a [routerLink]="['/pastein']">
+                    <span class="icon">2</span>
+                    <span class="text">paste-in</span>
+                </a>
+            </li>
+            <li>
+                <a [routerLink]="['/settings']">
+                    <span class="icon">3</span>
+                    <span class="text">settings</span>
+                </a>
+            </li>
+            <li>
+                <a [routerLink]="['/retrain']">
+                    <span class="icon">4</span>
+                    <span class="text">model retrain</span>
                 </a>
             </li>
         </ul>
     </nav>
 </div>
+
+<!--<a >-->
