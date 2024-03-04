@@ -26,10 +26,6 @@
     top: 2rem;
   }
   
-  .navbar ul {
-    transition: transform 0.3s; /* Added transition for list movement */
-  }
-  
   .navbar li {
     width: 15rem;
     margin-bottom: 1rem;
