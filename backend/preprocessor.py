@@ -2,8 +2,12 @@ from transformers import pipeline
 import time
 from concurrent.futures import ThreadPoolExecutor
 import psutil
-
-# ... (your existing code)
+import re
+import nltk
+nltk.download('stopwords')
+nltk.download('wordnet')
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
 
 #memory usage
 #def print_memory_usage():
@@ -193,7 +197,6 @@ Stefan Meerman
 
 
 #TODO: persoonlijke info uit mail halen
-#TODO: werkwoorden veralgemenen
 
 #parse results to json-like list
 def aggregate_span(results):
@@ -254,6 +257,23 @@ def ner_parallel(mails):
 
     return results
 
+# generalize verbs and remove stopwords
+def postprocess_text(text):
+    # Initialize WordNet Lemmatizer and stopwords
+    lemmatizer = WordNetLemmatizer()
+    stop_words_english = set(stopwords.words("english"))
+    stop_words_dutch = set(stopwords.words("dutch"))
+    
+    # Tokenize the text using custom tokenizer
+    words = re.findall(r'\b\w+\b|\s+', text)
+    
+    # Remove stopwords and lemmatize the words
+    cleaned_words = [lemmatizer.lemmatize(word.lower()) for word in words if word.strip().isalpha() and word.lower().strip() not in stop_words_english.union(stop_words_dutch)]
+    
+    # Join the cleaned words back into a string
+    cleaned_text = ' '.join(cleaned_words)
+    
+    return cleaned_text
 
 output_results = ner_parallel(mails)
 json_data = {}
@@ -264,7 +284,7 @@ for i, result in enumerate(output_results, 1):
     for entity in result['entities']:
         #add only entities with a certainty above 85%
         if(entity['score'] > 0.85):
-            keywords.append({'word': entity['word'], 'score': entity['score']})
+            keywords.append({'word': postprocess_text(entity['word']), 'score': entity['score']})
     json_data[f'mail_{i}'] = {'title': result['title'], 'keywords': keywords}
 
 print(json_data)
