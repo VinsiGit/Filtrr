@@ -20,7 +20,7 @@ RUN npm run build
 FROM nginx:alpine as production
 
 # Copy the built app from the builder stage to the nginx server
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder /app/dist/frontend /app
 # Copy the nginx.conf file to the container
 COPY nginx.conf /etc/nginx/nginx.conf
 
