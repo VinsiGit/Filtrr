@@ -1,60 +1,60 @@
-  .module {
-    width: 15rem;
-  }
-  
-  .navbar {
-    position: fixed;
-    width: 15rem;
-    height: 5rem;
-    background-color: #8972C8;
-    border-radius: 1.5rem;
-    transition: height 0.5s, border-radius 0.3s; /* Added transition for border-radius */
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-top-left-radius: 0; /* Make the top-right corner straight */
-    border-bottom-left-radius: 0; /* Make the bottom-right corner straight */
-  }
-  
-  .navbar:hover {
-    height: 100%;
-  }
+.module, .navbar, .logo, .navbar li {
+  width: 20rem;
+}
 
-  .logo {
-    top: 2rem;
-  }
-  
-  .navbar li {
-    width: 15rem;
-    margin-bottom: 1rem;
-  }
+.navbar, .logo {
+  width: 20rem;
+  height: 5rem;
+  background-color: #8972C8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .navbar a {
-    display: none;
-  }
-  
-  .navbar a .text {
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-  
-  .navbar:hover a .text {
-    opacity: 1;
-    padding-left: 1rem;
-  }
+.navbar {
+  position: fixed;
+  border-radius: 1.5rem;
+  transition: height 0.5s, border-radius 0.3s;
+  overflow: hidden;
+  flex-direction: column;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
 
-  .navbar:hover a {
-    display: flex;
-    align-items: center;
-    color: white;
-    text-decoration: none;
-    padding: 1rem;
-    width: 100%; /* Adjust width to leave space for padding */
-  }
+.navbar:hover {
+  height: 100%;
+}
 
-  .navbar a:hover {
-    background-color: #6B599C;
-  }
-  
+.logo {
+  position: fixed;
+  top: 0px;
+  border-top-right-radius: 1.5rem;
+  border-bottom-right-radius: 1.5rem;
+}
+
+.navbar a {
+  display: none;
+}
+
+.navbar a .text {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  padding-left: 1rem;
+}
+
+.navbar:hover a .text {
+  opacity: 1;
+}
+
+.navbar:hover a {
+  display: flex;
+  align-items: center;
+  color: white;
+  text-decoration: none;
+  padding: 1rem;
+  width: 100%;
+}
+
+.navbar a:hover {
+  background-color: #6B599C;
+}

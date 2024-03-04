@@ -5,34 +5,10 @@
             <span>Filtrr</span>
         </div>
         <ul>
-            <li>
-                <a href="/pastein">
+            <li *ngFor="let link of navlinks">
+                <a href="{{ link.url }}">
                     <span class="icon">1</span>
-                    <span class="text">fakqsdqsfsqdfgq</span>
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <span class="icon">2</span>
-                    <span class="text">fik</span>
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <span class="icon">3</span>
-                    <span class="text">fuk</span>
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <span class="icon">4</span>
-                    <span class="text">fek</span>
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <span class="icon">5</span>
-                    <span class="text">fok</span>
+                    <span class="text">{{ link.name }}</span>
                 </a>
             </li>
         </ul>
