@@ -1,0 +1,60 @@
+  .module {
+    width: 15rem;
+  }
+  
+  .navbar {
+    position: fixed;
+    width: 15rem;
+    height: 5rem;
+    background-color: #8972C8;
+    border-radius: 1.5rem;
+    transition: height 0.5s, border-radius 0.3s; /* Added transition for border-radius */
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-top-left-radius: 0; /* Make the top-right corner straight */
+    border-bottom-left-radius: 0; /* Make the bottom-right corner straight */
+  }
+  
+  .navbar:hover {
+    height: 100%;
+  }
+
+  .logo {
+    top: 2rem;
+  }
+  
+  .navbar li {
+    width: 15rem;
+    margin-bottom: 1rem;
+  }
+
+  .navbar a {
+    display: none;
+  }
+  
+  .navbar a .text {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .navbar:hover a .text {
+    opacity: 1;
+    padding-left: 1rem;
+  }
+
+  .navbar:hover a {
+    display: flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+    padding: 1rem;
+    width: 100%; /* Adjust width to leave space for padding */
+  }
+
+  .navbar a:hover {
+    background-color: #6B599C;
+  }
+  

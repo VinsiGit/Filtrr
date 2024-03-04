@@ -6,6 +6,11 @@
 /out-tsc
 /bazel-out
 
+dist/
+tmp/
+out-tsc/
+bazel-out/
+
 # Node
 /node_modules
 npm-debug.log
@@ -13,6 +18,7 @@ yarn-error.log
 
 # python
 /venv
+test.py
 
 # IDEs and editors
 .idea/
@@ -43,3 +49,5 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+
