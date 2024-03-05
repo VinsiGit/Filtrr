@@ -5,7 +5,7 @@
 .navbar, .logo {
   width: 15rem;
   height: 6rem;
-  background-color: #8972C8;
+  background-color: var(--nav-color);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -30,6 +30,7 @@
   top: 0px;
   border-top-right-radius: 1.5rem;
   border-bottom-right-radius: 1.5rem;
+  color: var(--nav-color-text);
 }
 
 .navbar a {
@@ -49,12 +50,12 @@
 .navbar:hover a {
   display: flex;
   align-items: center;
-  color: white;
+  color: var(--nav-color-text);
   text-decoration: none;
   padding: 1rem;
   width: 100%;
 }
 
 .navbar a:hover {
-  background-color: #6B599C;
+  background-color: var(--nav-color-hover);
 }
