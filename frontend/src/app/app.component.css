@@ -3,8 +3,10 @@
     height: 100%;
     margin-left: auto;
     margin-right: auto;
+    height: 100vh;
 }
 
 .content {
     padding: 1rem;
 }
+
