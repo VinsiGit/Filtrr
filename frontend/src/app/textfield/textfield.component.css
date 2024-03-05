@@ -19,24 +19,25 @@ textarea {
     width: 50vw;
     height: 100%;
     border: none;
+    background-color: #dcdcdd;
 }
 
 .box_input {
-    border: 5px solid black;
+    border: 10px solid #b8b8b8;
     border-radius: 1.5rem;
-    background-color: white;
+    background-color: #dcdcdd;
     padding: 1rem;
 }
 
 .response {
     padding: 1rem;
-    border: 5px solid black;
-    background-color: white;
+    border: 10px solid #b8b8b8;
+    background-color: #dcdcdd;
     border-radius: 1.5rem;
 }
 
 .response * {
-    color: black;
+    color: #46494c;
 }
 
 .content {
