@@ -236,8 +236,12 @@ def classify_text(mail):
     classification_time_k = end_time_k - start_time_k
 
     if len(output_skills) > 0:
+        print('---- output:')
+        print(output_skills)
         output_skills = aggregate_span(output_skills)
     if len(output_knowledge) > 0:
+        print('---- output:')
+        print(output_skills)
         output_knowledge = aggregate_span(output_knowledge)
     
     # aggregate skills and knowledge together to one list
