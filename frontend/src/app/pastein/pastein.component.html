@@ -1,2 +1,24 @@
-<app-textfield></app-textfield>
-<p>lmao</p>
+<main style="position: relative" class="module">
+    <div class="content">
+        <div class="text_box">
+            <form (ngSubmit)="submitText()" #textForm="ngForm">
+                <div class="box_input">
+                    <textarea rows="44" placeholder="paste here" name="text" [(ngModel)]="input" required></textarea>
+                    <button type="submit" [disabled]="!textForm.form.valid">process</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="response">
+            <div class="anwser" *ngIf="textBoxResponse">
+                <h1>textbox result:</h1>
+                <p>text: {{ this.text }}</p>
+                <p>label: {{ this.textBoxResponse.label }}</p>
+            </div>
+            <h2>addin result</h2>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis, eveniet accusamus, exercitationem beatae alias velit provident sed nemo ad numquam ex veniam suscipit, repudiandae dicta cupiditate inventore tempore assumenda soluta.</p>
+        </div>
+    </div>
+</main>
+
+

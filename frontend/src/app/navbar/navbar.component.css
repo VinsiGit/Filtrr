@@ -1,5 +1,6 @@
-.module, .navbar, .logo, .navbar li {
+.navbar, .logo, .navbar li {
   width: 16vw;
+  z-index: 1100;
 }
 
 .navbar, .logo {
@@ -14,14 +15,12 @@
 .navbar {
   position: fixed;
   border-radius: 1.5rem;
-  transition: height 0.5s, border-radius 0.3s;
+  transition: height 0.5s;
   overflow: hidden;
   flex-direction: column;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
-  box-shadow: 0 4px 12px 0 rgba(0,0,0,0.08);
   background: linear-gradient(180deg, rgba(96,95,173,1) 0%, rgba(195,117,228,1) 100%); 
-   
 }
 
 .navbar:hover {
@@ -43,7 +42,7 @@
 
 .navbar a .text {
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.4s ease;
   padding-left: 1rem;
 }
 
@@ -63,3 +62,29 @@
 .navbar a:hover {
   background-color: var(--nav-color-hover);
 }
+
+.module {
+  transition: width 0.2s ease-out;
+  width: 0px;
+}
+
+.module:hover {
+  width: 16vw;
+}
+
+.bar {
+  width: 100vw;
+  z-index: 1000;
+  position: fixed;
+  height: 6rem;
+  background-color: var(--page-color-background);
+  box-shadow: 0 4px 12px 0 rgba(0,0,0,0.08);
+}
+
+h1 {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  font-size: 3rem;
+  padding-left: 18vw;
+}
+

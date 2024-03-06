@@ -52,7 +52,7 @@ main {
 }
 
 html { 
-	background: var(--page-background-gradient);
+	background-color: var(--page-color-background);
 	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 	color: var(--page-color-text);
 }
@@ -61,7 +61,7 @@ html {
     --nav-color: #8972C8;
 	--nav-color-hover: #6B599C;
 	--nav-color-text: white;
-	--page-color-background: #31356E;
+	--page-color-background: #3e437a;
 	--page-background-gradient: radial-gradient(circle, rgba(75,80,134,1) 0%, rgba(49,53,110,1) 100%);
 	--page-color-text: white;
 	--module-color-border: #C2C2E6;
