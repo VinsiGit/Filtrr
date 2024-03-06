@@ -31,13 +31,16 @@ textarea:focus, input:focus{
     border-radius: 1.5rem;
     background-color: var(--module-color-background);
     padding: 1rem;  
+    box-shadow: 0 4px 12px 0 rgba(0,0,0,0.08);
 }
 
 .response {
-    padding: 1rem;
+    padding: 1.05rem 1.5rem;
     border: 10px solid var(--module-color-border);
     background-color: var(--module-color-background);
     border-radius: 1.5rem;
+    box-shadow: 0 4px 12px 0 rgba(0,0,0,0.08);
+    font-family: monospace;
 }
 
 .response * {
@@ -47,5 +50,6 @@ textarea:focus, input:focus{
 .content {
     display: flex;
     flex-direction: row;
-    gap: 3rem;
+    gap: 2vw;
+    height: 100%;
 }

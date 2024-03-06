@@ -1,15 +1,15 @@
 .module, .navbar, .logo, .navbar li {
-  width: 15rem;
+  width: 16vw;
 }
 
 .navbar, .logo {
-  width: 15rem;
+  width: 16vw;
   height: 6rem;
-  background-color: var(--nav-color);
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 
 .navbar {
   position: fixed;
@@ -19,6 +19,9 @@
   flex-direction: column;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
+  box-shadow: 0 4px 12px 0 rgba(0,0,0,0.08);
+  background: linear-gradient(180deg, rgba(96,95,173,1) 0%, rgba(195,117,228,1) 100%); 
+   
 }
 
 .navbar:hover {
@@ -31,6 +34,7 @@
   border-top-right-radius: 1.5rem;
   border-bottom-right-radius: 1.5rem;
   color: var(--nav-color-text);
+  background-color: #6b62b3;
 }
 
 .navbar a {
