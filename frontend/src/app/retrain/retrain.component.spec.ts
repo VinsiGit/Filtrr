@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TextfieldComponent } from './textfield.component';
+import { RetrainComponent } from './retrain.component';
 
-describe('TextfieldComponent', () => {
-  let component: TextfieldComponent;
-  let fixture: ComponentFixture<TextfieldComponent>;
+describe('RetrainComponent', () => {
+  let component: RetrainComponent;
+  let fixture: ComponentFixture<RetrainComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [TextfieldComponent]
+      declarations: [RetrainComponent]
     });
-    fixture = TestBed.createComponent(TextfieldComponent);
+    fixture = TestBed.createComponent(RetrainComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,60 +1,90 @@
-  .module {
-    width: 15rem;
-  }
-  
-  .navbar {
-    position: fixed;
-    width: 15rem;
-    height: 5rem;
-    background-color: #8972C8;
-    border-radius: 1.5rem;
-    transition: height 0.5s, border-radius 0.3s; /* Added transition for border-radius */
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-top-left-radius: 0; /* Make the top-right corner straight */
-    border-bottom-left-radius: 0; /* Make the bottom-right corner straight */
-  }
-  
-  .navbar:hover {
-    height: 100%;
-  }
+.navbar, .logo, .navbar li {
+  width: 16vw;
+  z-index: 1100;
+}
 
-  .logo {
-    top: 2rem;
-  }
-  
-  .navbar li {
-    width: 15rem;
-    margin-bottom: 1rem;
-  }
+.navbar, .logo {
+  width: 16vw;
+  height: 6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .navbar a {
-    display: none;
-  }
-  
-  .navbar a .text {
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-  
-  .navbar:hover a .text {
-    opacity: 1;
-    padding-left: 1rem;
-  }
 
-  .navbar:hover a {
-    display: flex;
-    align-items: center;
-    color: white;
-    text-decoration: none;
-    padding: 1rem;
-    width: 100%; /* Adjust width to leave space for padding */
-  }
+.navbar {
+  position: fixed;
+  border-radius: 1.5rem;
+  transition: height 0.5s;
+  overflow: hidden;
+  flex-direction: column;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  background: linear-gradient(180deg, rgba(96,95,173,1) 0%, rgba(195,117,228,1) 100%); 
+}
 
-  .navbar a:hover {
-    background-color: #6B599C;
-  }
-  
+.navbar:hover {
+  height: 100%;
+}
+
+.logo {
+  position: fixed;
+  top: 0px;
+  border-top-right-radius: 1.5rem;
+  border-bottom-right-radius: 1.5rem;
+  color: var(--nav-color-text);
+  background-color: #6b62b3;
+}
+
+.navbar a {
+  display: none;
+}
+
+.navbar a .text {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  padding-left: 1rem;
+}
+
+.navbar:hover a .text {
+  opacity: 1;
+}
+
+.navbar:hover a {
+  display: flex;
+  align-items: center;
+  color: var(--nav-color-text);
+  text-decoration: none;
+  padding: 1rem;
+  width: 100%;
+}
+
+.navbar a:hover {
+  background-color: var(--nav-color-hover);
+}
+
+.module {
+  transition: width 0.2s ease-out;
+  width: 0px;
+}
+
+.module:hover {
+  width: 16vw;
+}
+
+.bar {
+  width: 100vw;
+  z-index: 1000;
+  position: fixed;
+  height: 6rem;
+  background-color: var(--page-color-background);
+  box-shadow: 0 4px 12px 0 rgba(0,0,0,0.08);
+}
+
+h1 {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  font-size: 3rem;
+  padding-left: 18vw;
+}
+
