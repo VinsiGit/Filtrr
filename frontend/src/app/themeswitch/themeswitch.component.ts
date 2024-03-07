@@ -12,7 +12,7 @@ import { Component, Injectable } from '@angular/core';
 
 
 export class ThemeswitchComponent {
-  darkModeEnabled: boolean = true;
+  darkModeEnabled: boolean = false;
 
   toggleDarkMode() {
     this.darkModeEnabled = !this.darkModeEnabled;
@@ -43,7 +43,7 @@ export class ThemeswitchComponent {
     document.documentElement.style.setProperty('--nav-color-text', 'white');
     document.documentElement.style.setProperty('--nav-background-gradient', 'linear-gradient(180deg, rgba(240,83,101,1) 0%, rgba(246,142,95,1) 100%');
     document.documentElement.style.setProperty('--page-color-background', '#ffffff');
-    document.documentElement.style.setProperty('--page-background-gradient', 'radial-gradient(circle, rgba(75,80,134,1) 0%, rgba(49,53,110,1) 100%)');
+    document.documentElement.style.setProperty('--page-background-gradient', 'radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(241,241,241,1) 100%)');
     document.documentElement.style.setProperty('--page-color-text', '#46494c');
     document.documentElement.style.setProperty('--module-color-border', '#f2f2f2');
     document.documentElement.style.setProperty('--module-color-background', '#f2f2f2');

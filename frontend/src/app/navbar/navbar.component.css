@@ -72,8 +72,8 @@
   gap: 1rem;
   */
   position: absolute;
-  bottom: 2rem;
-  left: 2rem;
+  bottom: 1.5rem;
+  left: 1rem;
 }
 
 .navbar a:hover {
