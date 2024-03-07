@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PostService } from '../post.service';
+import { PagetitleService } from '../pagetitle.service';
 
 @Component({
   selector: 'app-pastein',
@@ -12,9 +13,13 @@ export class PasteinComponent {
   text: string = "";
   textBoxResponse: any;
 
-  constructor(private route: ActivatedRoute, private post: PostService) {
-
+  constructor(private route: ActivatedRoute, private post: PostService, private title: PagetitleService) {
   }
+
+  ngOnInit() {
+    this.title.pageTitle = "paste-in";
+  }
+
   async submitText() {
     try {
       const response = await this.post.postMail(this.input);

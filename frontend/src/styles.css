@@ -58,15 +58,17 @@ html {
 }
 
 :root {
-    --nav-color: #8972C8;
+    --nav-color: #6b62b3;
 	--nav-color-hover: #6B599C;
 	--nav-color-text: white;
+	--nav-background-gradient: linear-gradient(180deg, rgba(96,95,173,1) 0%, rgba(195,117,228,1) 100%);
 	--page-color-background: #3e437a;
 	--page-background-gradient: radial-gradient(circle, rgba(75,80,134,1) 0%, rgba(49,53,110,1) 100%);
 	--page-color-text: white;
 	--module-color-border: #C2C2E6;
 	--module-color-background: #D7D7EF;
 	--module-color-text: #757575;
+	--module-color-highlight: #f05365; 
 }
 
 * {

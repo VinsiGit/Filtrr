@@ -20,12 +20,12 @@ const routes: Routes = [
     component: SettingsComponent
   },
   {
-    path: "model retrain",
+    path: "retrain",
     component: RetrainComponent
   },
   {
     path: "",
-    redirectTo: "pastein",
+    redirectTo: "dashboard",
     pathMatch: "full"
   }
 ];
