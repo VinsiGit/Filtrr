@@ -1,3 +1,7 @@
+const site = "http://localhost:9090/" // https://s144272.devops-ap.be/api/site
+
+let initialAppState = document.getElementById("app-body").innerHTML;
+
 // This function is called when Office.js is fully loaded.
 Office.onReady((info) => {
   if (info.host === Office.HostType.Outlook) {
@@ -88,34 +92,65 @@ export async function display(data) {
   item_proba.innerHTML = "<b>Probability:</b> <br/>" + data.predicted_proba;
 }
 
-export async function sendEmailBodyToServer(data) {
-  document.getElementById("loading-screen").style.display = "block";
-
+export async function checkServerStatus() {
   try {
-    const response = await fetch('http://localhost:9090/', { // https://s144272.devops-ap.be/api/site
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ body: data.text_body }),
-    });
+    const response = await fetch(site, { method: 'GET' });
+    if (response.ok) {
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      // Remove the check server button
+      const checkServerButton = document.getElementById("check-server");
+      if (checkServerButton) {
+        checkServerButton.remove();
+      }
+      document.getElementById("app-body").innerHTML = initialAppState;
+
+      console.log('The server is offline.');
     }
-
-    return response.json();
   } catch (error) {
-    document.getElementById("app-body").innerHTML = "The server is currently offline. Please try again later.";
-    console.error('Error:', error);
-  } finally {
-    document.getElementById("loading-screen").style.display = "none";
+    console.log('The server is offline.');
   }
 }
 
+export async function sendEmailBodyToServer(data) {
+    document.getElementById("loading-screen").style.display = "block";
 
+    try {
+        const response = await fetch(site, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ body: data.text_body }),
+        });
 
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
+        // Remove the check server button if it exists
+        const checkServerButton = document.getElementById("check-server");
+        if (checkServerButton) {
+            checkServerButton.remove();
+        }
+
+        return response.json();
+    } catch (error) {
+      document.getElementById("app-body").innerHTML = "The server is currently offline. Please try again later.";
+
+      // Create the check server button
+      const checkServerButton = document.createElement("button");
+      checkServerButton.id = "check-server";
+      checkServerButton.innerText = "Check Server Status";
+      document.getElementById("app-body").appendChild(checkServerButton);
+
+      // Add an event listener to the button
+      checkServerButton.addEventListener("click", () => checkServerStatus());
+
+      console.error('Error:', error);
+    } finally {
+      document.getElementById("loading-screen").style.display = "none";
+    }
+}
   // const bodyData = {
   //   body: "Your body content here"
   // };
