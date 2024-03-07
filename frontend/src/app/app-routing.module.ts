@@ -1,25 +1,27 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PasteinComponent } from './pastein/pastein.component';
-import { TextfieldComponent } from './textfield/textfield.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { SettingsComponent } from './settings/settings.component';
+import { RetrainComponent } from './retrain/retrain.component';
 
 
 const routes: Routes = [
   {
     path: "dashboard",
-    component: TextfieldComponent
+    component: DashboardComponent
   },
   {
-    path: "pastein",
+    path: "paste-in",
     component: PasteinComponent
   },
   {
     path: "settings",
-    component: TextfieldComponent
+    component: SettingsComponent
   },
   {
-    path: "retrain",
-    component: TextfieldComponent
+    path: "model retrain",
+    component: RetrainComponent
   },
   {
     path: "",
