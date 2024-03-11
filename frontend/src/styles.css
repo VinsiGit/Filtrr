@@ -55,7 +55,7 @@ html {
 	background-color: var(--page-color-background);
 	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 	color: var(--page-color-text);
-	transition: background-color 0.4s;
+	transition: background-color 0.3s;
 }
 
 :root {

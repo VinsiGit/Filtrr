@@ -31,8 +31,8 @@ export class ThemeswitchComponent {
     document.documentElement.style.setProperty('--page-color-background', '#3e437a');
     document.documentElement.style.setProperty('--page-background-gradient', 'radial-gradient(circle, rgba(75,80,134,1) 0%, rgba(49,53,110,1) 100%)');
     document.documentElement.style.setProperty('--page-color-text', 'white');
-    document.documentElement.style.setProperty('--module-color-border', '#C2C2E6');
-    document.documentElement.style.setProperty('--module-color-background', '#D7D7EF');
+    document.documentElement.style.setProperty('--module-color-border', '#C9C9E8');
+    document.documentElement.style.setProperty('--module-color-background', '#C9C9E8');
     document.documentElement.style.setProperty('--module-color-text', '#757575');
     document.documentElement.style.setProperty('--module-color-highlight', '#f05365');
   }
