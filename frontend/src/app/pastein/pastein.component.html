@@ -1,6 +1,6 @@
-<main style="position: relative" class="module">
+<main style="position: relative">
     <div class="content">
-        <div class="text_box">
+        <div id="text_box" class="module">
             <form (ngSubmit)="submitText()" #textForm="ngForm">
                 <div class="box_input">
                     <textarea rows="44" placeholder="paste here" name="text" [(ngModel)]="input" required></textarea>
@@ -9,7 +9,7 @@
             </form>
         </div>
 
-        <div class="response">
+        <div id="response" class="module">
             <div class="anwser" *ngIf="textBoxResponse">
                 <h1>textbox result:</h1>
                 <p>text: {{ this.text }}</p>

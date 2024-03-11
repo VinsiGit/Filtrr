@@ -75,3 +75,9 @@ html {
 * {
     -webkit-font-smoothing: antialiased;
 }
+
+.module {
+	background-color: var(--module-color-background);
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.2);
+}

@@ -19,17 +19,12 @@ textarea:focus, input:focus{
 .box_input {
     border: 10px solid var(--module-color-border);
     border-radius: 1.5rem;
-    background-color: var(--module-color-background);
     padding: 1rem;  
-    box-shadow: 0 4px 12px 0 rgba(0,0,0,0.2);
 }
 
-.response {
+#response {
     padding: 1.05rem 1.5rem;
     border: 10px solid var(--module-color-border);
-    background-color: var(--module-color-background);
-    border-radius: 1.5rem;
-    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.2);
     font-family: monospace;
 }
 
