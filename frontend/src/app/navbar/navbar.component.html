@@ -1,8 +1,8 @@
 <nav>
     <div class="bar">
-        <h1>{{ this.pageTitle }}</h1>
+        <h1>{{ this.pagetitle }}</h1>
     </div>
-    <div class="module">
+    <div class="container">
         <div class="navbar">
             <div class="logo">
                 <span>L</span>
@@ -28,12 +28,15 @@
                     </a>
                 </li>
                 <li>
-                    <a [routerLink]="['/model retrain']">
+                    <a [routerLink]="['/retrain']">
                         <span class="icon">4</span>
-                        <span class="text">model retrain</span>
+                        <span class="text">retrain model</span>
                     </a>
                 </li>
             </ul>
+            <footer class="switch">
+                <app-themeswitch></app-themeswitch>
+            </footer>
         </div>
     </div>
 </nav>

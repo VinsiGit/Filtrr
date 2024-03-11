@@ -11,6 +11,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SettingsComponent } from './settings/settings.component';
 import { RetrainComponent } from './retrain/retrain.component';
+import { ThemeswitchComponent } from './themeswitch/themeswitch.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { RetrainComponent } from './retrain/retrain.component';
     NavbarComponent,
     DashboardComponent,
     SettingsComponent,
-    RetrainComponent
+    RetrainComponent,
+    ThemeswitchComponent
   ],
   imports: [
     BrowserModule,

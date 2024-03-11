@@ -20,7 +20,7 @@
   flex-direction: column;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
-  background: linear-gradient(180deg, rgba(96,95,173,1) 0%, rgba(195,117,228,1) 100%); 
+  background: var(--nav-background-gradient); 
 }
 
 .navbar:hover {
@@ -33,10 +33,10 @@
   border-top-right-radius: 1.5rem;
   border-bottom-right-radius: 1.5rem;
   color: var(--nav-color-text);
-  background-color: #6b62b3;
+  background-color: var(--nav-color);
 }
 
-.navbar a {
+.navbar a, .navbar .switch {
   display: none;
 }
 
@@ -46,11 +46,16 @@
   padding-left: 1rem;
 }
 
-.navbar:hover a .text {
+.navbar .switch {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.navbar:hover a .text, .navbar:hover .switch {
   opacity: 1;
 }
 
-.navbar:hover a {
+.navbar:hover a{
   display: flex;
   align-items: center;
   color: var(--nav-color-text);
@@ -59,16 +64,28 @@
   width: 100%;
 }
 
+.navbar:hover .switch {
+  display: flex;
+  /*
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  */
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1rem;
+}
+
 .navbar a:hover {
   background-color: var(--nav-color-hover);
 }
 
-.module {
+.container {
   transition: width 0.2s ease-out;
   width: 0px;
 }
 
-.module:hover {
+.container:hover {
   width: 16vw;
 }
 
@@ -78,7 +95,7 @@
   position: fixed;
   height: 6rem;
   background-color: var(--page-color-background);
-  box-shadow: 0 4px 12px 0 rgba(0,0,0,0.08);
+  box-shadow: 0 4px 12px 0 rgba(0,0,0,0.12);
 }
 
 h1 {

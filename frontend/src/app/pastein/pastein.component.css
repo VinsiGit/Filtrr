@@ -1,18 +1,7 @@
-.response * {
-    color: var(--page-color-text);
-}
-
 main {
     display: flex;
     flex-direction: column;
     vertical-align: center;
-}
-
-h1 {
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
-    font-size: 3rem;
-    padding-left: 18vw;
 }
 
 textarea {
@@ -32,7 +21,7 @@ textarea:focus, input:focus{
     border-radius: 1.5rem;
     background-color: var(--module-color-background);
     padding: 1rem;  
-    box-shadow: 0 4px 12px 0 rgba(0,0,0,0.08);
+    box-shadow: 0 4px 12px 0 rgba(0,0,0,0.2);
 }
 
 .response {
@@ -40,12 +29,21 @@ textarea:focus, input:focus{
     border: 10px solid var(--module-color-border);
     background-color: var(--module-color-background);
     border-radius: 1.5rem;
-    box-shadow: 0 4px 12px 0 rgba(0,0,0,0.08);
+    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.2);
     font-family: monospace;
 }
 
-.response * {
+
+.content {
     color: var(--module-color-text);
+}
+
+
+h1 {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    font-size: 3rem;
+    color: var(--module-color-highlight);
 }
 
 .content {
