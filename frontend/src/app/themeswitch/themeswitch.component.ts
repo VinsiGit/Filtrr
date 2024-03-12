@@ -35,7 +35,7 @@ export class ThemeswitchComponent {
       document.documentElement.style.setProperty('--module-color-highlight', '#f05365');
       document.documentElement.style.setProperty('--module-color-highlight-complementary', '#f05365');
       document.documentElement.style.setProperty('--module-color-highlight-monochrome', '#7a6ce4');
-      this.theme.gridcolor = "#c2c2e6";
+      this.theme.gridcolor = "#bcbce4";
       this.theme.label1color = "#f05365";
       this.theme.label2color = "#f5a623";
       this.theme.textcolor = "#8e8ea7";
@@ -54,7 +54,7 @@ export class ThemeswitchComponent {
       document.documentElement.style.setProperty('--module-color-text', '#757575');
       document.documentElement.style.setProperty('--module-color-highlight-complementary', '#7a6ce4');
       document.documentElement.style.setProperty('--module-color-highlight-monochrome', '#f05365');
-      this.theme.gridcolor = "#dcdcdd";
+      this.theme.gridcolor = "#f2f2f2";
       this.theme.label1color = "#6460af";
       this.theme.label2color = "#b872de";
       this.theme.textcolor = "#8e8ea7";

@@ -4,8 +4,8 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class ThemeService {
+  gridcolor: string = "#f2f2f2";
   label1color: string = "#6460af";
   label2color: string = "#b872de";
-  gridcolor: string = "#dcdcdd";
   textcolor: string = "#8e8ea7";
 }
