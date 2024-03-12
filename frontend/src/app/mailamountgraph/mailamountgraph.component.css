@@ -1,3 +1,11 @@
 #chart {
-    width: 30vw;
+    width: 60vw;
+}
+
+apx-chart {
+    width: 100%;
+}
+
+.module {
+    padding: 1rem;
 }

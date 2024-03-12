@@ -63,14 +63,16 @@ html {
     --nav-color: #f05365;
 	--nav-color-hover: #eb5364;
 	--nav-color-text: white;
+	--nav-color-background: white;
 	--nav-background-gradient: linear-gradient(180deg, rgba(240,83,101,1) 0%, rgba(246,142,95,1) 100%);
-	--page-color-background: white;
+	--page-color-background: #f0f4f8;
 	--page-background-gradient: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(241,241,241,1) 100%);
 	--page-color-text: #46494c;
-	--module-color-border: #f2f2f2;
-	--module-color-background: #f2f2f2;
+	--module-color-border: white;
+	--module-color-background: white;
 	--module-color-text: #757575;
-	--module-color-highlight: #6b62b3;
+	--module-color-highlight-complementary: #7a6ce4;
+	--module-color-highlight-monochrome: #f05365;
 }
 
 * {
@@ -81,4 +83,16 @@ html {
 	background-color: var(--module-color-background);
     border-radius: 1.5rem;
     box-shadow: var(--shadow);
+}
+
+.apexcharts-zoom-icon.apexcharts-selected > svg {
+    fill: var(--module-color-highlight-monochrome) !important;
+  }
+  
+.apexcharts-pan-icon.apexcharts-selected > svg {
+    stroke: var(--module-color-highlight-monochrome) !important;
+  }
+
+  .apexcharts-tooltip.apexcharts-theme-light.apexcharts-active > *{
+	color: #46494c;
 }

@@ -94,7 +94,7 @@
   z-index: 1000;
   position: fixed;
   height: 6rem;
-  background-color: var(--page-color-background);
+  background-color: var(--nav-color-background);
   box-shadow: var(--shadow);
 }
 

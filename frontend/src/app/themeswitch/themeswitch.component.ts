@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ThemeService } from '../theme.service';
+import * as ApexCharts from 'apexcharts';
 
 @Component({
   selector: 'app-themeswitch',
@@ -23,14 +24,17 @@ export class ThemeswitchComponent {
       document.documentElement.style.setProperty('--nav-color', '#6b62b3');
       document.documentElement.style.setProperty('--nav-color-hover', '#6B599C');
       document.documentElement.style.setProperty('--nav-color-text', 'white');
+      document.documentElement.style.setProperty('--nav-color-background', '#3e437a');
       document.documentElement.style.setProperty('--nav-background-gradient', 'linear-gradient(180deg, rgba(96,95,173,1) 0%, rgba(195,117,228,1) 100%');
-      document.documentElement.style.setProperty('--page-color-background', '#3e437a');
+      document.documentElement.style.setProperty('--page-color-background', '#303569');
       document.documentElement.style.setProperty('--page-background-gradient', 'radial-gradient(circle, rgba(75,80,134,1) 0%, rgba(49,53,110,1) 100%)');
       document.documentElement.style.setProperty('--page-color-text', 'white');
       document.documentElement.style.setProperty('--module-color-border', '#C9C9E8');
       document.documentElement.style.setProperty('--module-color-background', '#C9C9E8');
       document.documentElement.style.setProperty('--module-color-text', '#757575');
       document.documentElement.style.setProperty('--module-color-highlight', '#f05365');
+      document.documentElement.style.setProperty('--module-color-highlight-complementary', '#f05365');
+      document.documentElement.style.setProperty('--module-color-highlight-monochrome', '#7a6ce4');
       this.theme.gridcolor = "#c2c2e6";
       this.theme.label1color = "#f05365";
       this.theme.label2color = "#f5a623";
@@ -40,18 +44,42 @@ export class ThemeswitchComponent {
       document.documentElement.style.setProperty('--nav-color', '#f05365');
       document.documentElement.style.setProperty('--nav-color-hover', '#eb5364');
       document.documentElement.style.setProperty('--nav-color-text', 'white');
+      document.documentElement.style.setProperty('--nav-color-background', 'white');
       document.documentElement.style.setProperty('--nav-background-gradient', 'linear-gradient(180deg, rgba(240,83,101,1) 0%, rgba(246,142,95,1) 100%');
-      document.documentElement.style.setProperty('--page-color-background', '#ffffff');
+      document.documentElement.style.setProperty('--page-color-background', '#f0f4f8');
       document.documentElement.style.setProperty('--page-background-gradient', 'radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(241,241,241,1) 100%)');
       document.documentElement.style.setProperty('--page-color-text', '#46494c');
-      document.documentElement.style.setProperty('--module-color-border', '#f2f2f2');
-      document.documentElement.style.setProperty('--module-color-background', '#f2f2f2');
+      document.documentElement.style.setProperty('--module-color-border', 'white');
+      document.documentElement.style.setProperty('--module-color-background', 'white');
       document.documentElement.style.setProperty('--module-color-text', '#757575');
-      document.documentElement.style.setProperty('--module-color-highlight', '#6b62b3');
+      document.documentElement.style.setProperty('--module-color-highlight-complementary', '#7a6ce4');
+      document.documentElement.style.setProperty('--module-color-highlight-monochrome', '#f05365');
       this.theme.gridcolor = "#dcdcdd";
       this.theme.label1color = "#6460af";
       this.theme.label2color = "#b872de";
       this.theme.textcolor = "#8e8ea7";
     }
+
+    //updating chart colors and rerendering the chart
+    ApexCharts.exec('test', 'updateOptions', {
+      colors: [this.theme.label1color, this.theme.label2color],
+      grid: {
+        borderColor: this.theme.gridcolor,
+      },
+      xaxis: {
+        labels: {
+          style: {
+            colors: this.theme.textcolor,
+          },
+        },
+      },
+      yaxis: {
+        labels: {
+          style: {
+            colors: this.theme.textcolor,
+          },
+        },
+      },
+    }, true, true, true);
   }
 }

@@ -55,7 +55,8 @@ export class MailamountgraphComponent {
         },
       ],
       chart: {
-        height: 350,
+        redrawOnParentResize: true,
+        id: "test",
         type: 'area',
         zoom: {
           enabled: true,
