@@ -95,7 +95,7 @@
   position: fixed;
   height: 6rem;
   background-color: var(--page-color-background);
-  box-shadow: 0 4px 12px 0 rgba(0,0,0,0.12);
+  box-shadow: var(--shadow);
 }
 
 h1 {

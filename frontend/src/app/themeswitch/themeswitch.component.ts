@@ -19,6 +19,7 @@ export class ThemeswitchComponent {
 
   applyTheme() {
     if (this.darkModeEnabled) {
+      document.documentElement.style.setProperty('--shadow', '0 4px 12px 0 rgba(0, 0, 0, 0.2)');
       document.documentElement.style.setProperty('--nav-color', '#6b62b3');
       document.documentElement.style.setProperty('--nav-color-hover', '#6B599C');
       document.documentElement.style.setProperty('--nav-color-text', 'white');
@@ -35,6 +36,7 @@ export class ThemeswitchComponent {
       this.theme.label2color = "#f5a623";
       this.theme.textcolor = "#8e8ea7";
     } else {
+      document.documentElement.style.setProperty('--shadow', '0px 1px 22px -12px #607D8B');
       document.documentElement.style.setProperty('--nav-color', '#f05365');
       document.documentElement.style.setProperty('--nav-color-hover', '#eb5364');
       document.documentElement.style.setProperty('--nav-color-text', 'white');

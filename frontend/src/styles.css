@@ -59,6 +59,7 @@ html {
 }
 
 :root {
+	--shadow: 0px 1px 22px -12px #607D8B;
     --nav-color: #f05365;
 	--nav-color-hover: #eb5364;
 	--nav-color-text: white;
@@ -69,7 +70,7 @@ html {
 	--module-color-border: #f2f2f2;
 	--module-color-background: #f2f2f2;
 	--module-color-text: #757575;
-	--module-color-highlight: #6b62b3; 
+	--module-color-highlight: #6b62b3;
 }
 
 * {
@@ -79,5 +80,5 @@ html {
 .module {
 	background-color: var(--module-color-background);
     border-radius: 1.5rem;
-    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow);
 }
