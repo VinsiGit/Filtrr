@@ -68,6 +68,7 @@ html {
 	--page-color-background: #f0f4f8;
 	--page-background-gradient: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(241,241,241,1) 100%);
 	--page-color-text: #46494c;
+	--page-color-inactive: #f0f4f8;
 	--module-color-border: white;
 	--module-color-background: white;
 	--module-color-text: #757575;

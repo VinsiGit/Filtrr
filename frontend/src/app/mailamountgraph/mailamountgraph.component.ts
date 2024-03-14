@@ -46,11 +46,15 @@ export class MailamountgraphComponent {
     this.chartOptions = {
       series: [
         {
-          name: "python",
+          name: "irrelevant",
+          data: [14, 18, 8, 5, 7, 2, 1],
+        },
+        {
+          name: "bi-engineer",
           data: [8, 12, 12, 13, 10, 8, 12],
         },
         {
-          name: "site",
+          name: "data-engineer",
           data: [4, 17, 2, 1, 8, 8, 5],
         },
       ],
@@ -70,7 +74,7 @@ export class MailamountgraphComponent {
           opacity: 0.05,
         },
       },
-      colors: [this.theme.label1color, this.theme.label2color],
+      colors: [this.theme.irrelevant_color, this.theme.label1color, this.theme.label2color],
       dataLabels: {
         enabled: false,
       },
