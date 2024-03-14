@@ -6,7 +6,7 @@ main {
 
 textarea {
     resize: none;
-    width: 50vw;
+    width: 100%;
     height: 100%;
     border: none;
     background-color: var(--module-color-background);
@@ -19,18 +19,15 @@ textarea:focus, input:focus{
 .box_input {
     border: 10px solid var(--module-color-border);
     border-radius: 1.5rem;
-    background-color: var(--module-color-background);
     padding: 1rem;  
-    box-shadow: 0 4px 12px 0 rgba(0,0,0,0.2);
+    width: 60vw;
 }
 
-.response {
+#response {
     padding: 1.05rem 1.5rem;
     border: 10px solid var(--module-color-border);
-    background-color: var(--module-color-background);
-    border-radius: 1.5rem;
-    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.2);
     font-family: monospace;
+    width: 100%;
 }
 
 
@@ -43,7 +40,6 @@ h1 {
     padding-top: 1.5rem;
     padding-bottom: 1.5rem;
     font-size: 3rem;
-    color: var(--module-color-highlight);
 }
 
 .content {
@@ -51,4 +47,34 @@ h1 {
     flex-direction: row;
     gap: 2vw;
     height: 100%;
+}
+
+h2 {
+    padding-top: .5rem;
+    padding-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+ol > li {
+    margin-left: 2rem;
+    list-style-type: circle;
+}
+
+.logocontainer {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+  
+svg {
+    margin: auto;
+    fill: var(--page-color-inactive);
+    width: 24vw;
+    padding-left: 2vw;
+    padding-right: 2vw;
+}
+
+apx-chart {
+    display: block;
+    width: 28vw;
 }
