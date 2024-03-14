@@ -1,14 +1,16 @@
-# app.py
 from flask import Flask
 import json
 from pymongo import MongoClient
 import os
 from flask import request
 from flask_cors import CORS
-from flask import jsonify
+import random
+import datetime
+import time
+import hashlib
 
 # Get the MongoDB connection details from environment variables
-mongo_host = os.environ.get('MONGO_HOST', 'db')
+mongo_host = os.environ.get('MONGO_HOST', 'localhost') # 'db' is the default name of the MongoDB service within the Docker network TODO: change to localhost for local development 
 mongo_port = int(os.environ.get('MONGO_PORT', '27017'))
 mongo_username = os.environ.get('MONGO_USERNAME', 'root')
 mongo_password = os.environ.get('MONGO_PASSWORD', 'mongo')
@@ -22,38 +24,76 @@ db = client['filtrr_db']
 app = Flask(__name__)
 CORS(app)
 
+def hash_input(input):
+    # Convert the input to bytes
+    input_bytes = input.encode('utf-8')
+
+    # Create a hash object
+    hash_object = hashlib.sha256()
+
+    # Update the hash object with the input bytes
+    hash_object.update(input_bytes)
+
+    # Get the hashed value as a hexadecimal string
+    hashed_input = hash_object.hexdigest()
+
+    return hashed_input
+
 @app.route('/api')
 def hello():
     return 'Filtrr api 123'
 
-@app.route('/api/site')
+@app.route('/api/analytics')
 def site():
     # Get the data from the database
-    data = list(db.site.find())
+    data = list(db.mails.find())
 
     response = json.dumps(data, default=str)
 
     return response
 
-@app.route('/api/site', methods=['POST'])
+@app.route('/api', methods=['POST'])
 def add_site():
     # Get the data from the request
     data = request.json
 
+    # Get the source from the request headers
+    source = request.headers.get('Source')
+
+    # Add the source to the data
+    hash = str(hash_input(data['body']))
+
+    start_time = time.time()
+
+    # TODO: process the data
+
+    end_time = time.time()
+    processing_time = end_time - start_time
+
+    # Generate a random response
+    label = random.choice(["BI_ENGINEER", "IRRELEVANT", "DATA_ENGINEER"])
+    certainty = random.random()
+    keywords = ["een", "twee", "drie", "vier", "vijf"]
+
+    # Make the response in JSON format
+    response = {
+    "id": hash,
+    "label": label,
+    "date": datetime.datetime.now().strftime("%Y-%m-%d"),
+    "keywords": keywords,
+    "rating": 0,
+    "datetime_start": start_time,
+    "datetime_end": end_time,
+    "datetime_elapsed": processing_time,
+    "certainty": certainty,
+    "source": source
+   }
+
     # Add the data to the database
-    db.site.insert_one(data)
+    db.mails.insert_one(response)
 
-    with open('classifications.json', 'r') as file:
-        content = json.load(file)
-    return content
-
-@app.route('/api/addin')
-def addin():
-    # Get the data from the database
-    data = list(db.site.find())
-    
-    # Convert the data to JSON
-    response = json.dumps(data, default=str)
+    # Remove the _id key from MongoDB'
+    response.pop('_id', None)
 
     return response
 
