@@ -9,12 +9,13 @@ COPY package*.json ./
 
 # Install the dependencies
 RUN npm install
+RUN npm install apexcharts ng-apexcharts --save --force
 
 # Copy the source code to the container
 COPY . .
 
 # Build the Angular app
-RUN npm run build --force
+RUN npm run build 
 
 # Use a lightweight image for the production environment
 FROM nginx:alpine as production
