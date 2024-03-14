@@ -11,11 +11,13 @@
     <title>Filtrr Task Pane Add-in</title>
 
     <!-- Office JavaScript API -->
+
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js"></script>
 
     <!-- For more information on Fluent UI, visit https://developer.microsoft.com/fluentui#/. -->
     <link rel="stylesheet"
         href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/11.0.0/css/fabric.min.css" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 
     <!-- Template styles -->
     <link href="taskpane.css" rel="stylesheet" type="text/css" />
@@ -39,13 +41,14 @@
         </label>
         <p><label id="item-class"></label></p>
         <p><label id="item-proba"></label></p>
-
+        <canvas id="myChart" style="width:100%;max-width:600px;background-color:rgba(255, 255, 255, 0.5)"></canvas>
 
 
         <!-- <div role="button" id="run" class="ms-welcome__action ms-Button ms-Button--hero ms-font-xl">
             <span class="ms-Button-label">Run</span>
         </div> -->
     </main>
+
 </body>
 
 </html>
