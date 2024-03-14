@@ -12,6 +12,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { SettingsComponent } from './settings/settings.component';
 import { RetrainComponent } from './retrain/retrain.component';
 import { ThemeswitchComponent } from './themeswitch/themeswitch.component';
+import { MailamountgraphComponent } from './mailamountgraph/mailamountgraph.component';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 @NgModule({
   declarations: [
@@ -21,14 +23,16 @@ import { ThemeswitchComponent } from './themeswitch/themeswitch.component';
     DashboardComponent,
     SettingsComponent,
     RetrainComponent,
-    ThemeswitchComponent
+    ThemeswitchComponent,
+    MailamountgraphComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    NgApexchartsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
