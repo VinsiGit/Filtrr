@@ -36,8 +36,8 @@ export class ThemeswitchComponent {
       document.documentElement.style.setProperty('--module-color-highlight-complementary', '#f05365');
       document.documentElement.style.setProperty('--module-color-highlight-monochrome', '#7a6ce4');
       this.theme.gridcolor = "#bcbce4";
-      this.theme.label1color = "#f5a623";
-      this.theme.label2color = "#f05365";
+      this.theme.label1color = "#f05365";
+      this.theme.label2color = "#f5a623";
       this.theme.textcolor = "#8e8ea7";
     } else {
       document.documentElement.style.setProperty('--shadow', '0px 1px 22px -12px #607D8B');
@@ -56,8 +56,8 @@ export class ThemeswitchComponent {
       document.documentElement.style.setProperty('--module-color-highlight-complementary', '#7a6ce4');
       document.documentElement.style.setProperty('--module-color-highlight-monochrome', '#f05365');
       this.theme.gridcolor = "#f2f2f2";
-      this.theme.label1color = "#b872de";
-      this.theme.label2color = "#6460af";
+      this.theme.label1color = "#6460af";
+      this.theme.label2color = "#b872de";
       this.theme.textcolor = "#8e8ea7";
     }
 
@@ -81,6 +81,9 @@ export class ThemeswitchComponent {
           },
         },
       },
+    }, true, true, true);
+    ApexCharts.exec('certaintyWheel', 'updateOptions', {
+      colors: [this.theme.label1color]
     }, true, true, true);
   }
 }

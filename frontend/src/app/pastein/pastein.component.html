@@ -13,8 +13,13 @@
             <div class="anwser" *ngIf="textBoxResponse; else logo">
                 <h1>textbox result:</h1>
                 <p>label: {{ this.textBoxResponse.label }}</p>
-                <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart"
-                    [plotOptions]="chartOptions.plotOptions" [labels]="chartOptions.labels"></apx-chart>
+                <apx-chart 
+                [series]="chartOptions.series" 
+                [chart]="chartOptions.chart" 
+                [plotOptions]="chartOptions.plotOptions" 
+                [labels]="chartOptions.labels"
+                [colors]="chartOptions.colors">
+                </apx-chart>
                 <h2>keywords:</h2>
                 <ol>
                     <li *ngFor="let keyword of this.textBoxResponse.keywords">{{ keyword }}</li>

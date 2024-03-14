@@ -10,6 +10,7 @@ import {
   ApexChart,
   ChartComponent
 } from "ng-apexcharts";
+import { ThemeService } from '../theme.service';
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -30,7 +31,7 @@ export class PasteinComponent {
   text: string = "";
   textBoxResponse: Email | undefined;
 
-  constructor(private route: ActivatedRoute, private post: PostService, private title: PagetitleService) {
+  constructor(private route: ActivatedRoute, private post: PostService, private title: PagetitleService, private theme: ThemeService) {
   }
 
   ngOnInit() {
@@ -41,43 +42,32 @@ export class PasteinComponent {
     if(this.textBoxResponse)
     {
       this.chartOptions = {
-        series: [this.textBoxResponse.certainty*100],
+        series: [Math.round((this.textBoxResponse.certainty*100) * 100) / 100], //round to 2 decimal places
         chart: {
+          id: "certaintyWheel",
           height: 350,
           type: "radialBar"
         },
+        colors: [this.theme.label1color],  
         plotOptions: {
           radialBar: {
             hollow: {
               size: `60%`
+            }, 
+            track: {
+              background: '#f0f4f8',
             }
           }
         },
-        labels: ["data_engineer"]
+        labels: [this.textBoxResponse.label]
       };
     }
   }
 
   async submitText() {
     try {
-      const response = await this.post.postMail(this.input);
-      //this.textBoxResponse = response;
-      this.textBoxResponse = {
-        "_id": "65e2165e3be9d6b535d8ce72",
-        "id": "65e2165e3be9d6b535d8ce72",
-        "sender_email": "9aafe3821e66b0c91e68963e2d23312b90f65d37",
-        "datetime_received": 1646685600,
-        "subject": [],
-        "text_body": [],
-        "label": "data_engineer",
-        "keywords": ["time management", "organization", "project management", "leadership"],
-        "rating": 1,
-        "datetime_start": 1646685600,
-        "datetime_end": 1646682000,
-        "datetime_elapsed": 3600,
-        "certainty":0.69420,
-        "source":"gmail"
-      };
+      const response = await this.post.postMail({"body": this.input});
+      this.textBoxResponse = response;
       this.text = this.input;
       console.log('Response content:', this.textBoxResponse);
       this.renderchart();

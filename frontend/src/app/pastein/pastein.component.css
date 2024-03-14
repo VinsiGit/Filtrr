@@ -73,3 +73,8 @@ svg {
     padding-left: 2vw;
     padding-right: 2vw;
 }
+
+apx-chart {
+    display: block;
+    width: 28vw;
+}
