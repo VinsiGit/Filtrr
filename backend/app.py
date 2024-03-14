@@ -11,7 +11,7 @@ import hashlib
 from flask import jsonify
 
 # Get the MongoDB connection details from environment variables
-mongo_host = os.environ.get('MONGO_HOST', 'localhost') # 'db' is the default name of the MongoDB service within the Docker network TODO: change to localhost for local development 
+mongo_host = os.environ.get('MONGO_HOST', 'db') # 'db' is the default name of the MongoDB service within the Docker network TODO: change to localhost for local development 
 mongo_port = int(os.environ.get('MONGO_PORT', '27017'))
 mongo_username = os.environ.get('MONGO_USERNAME', 'root')
 mongo_password = os.environ.get('MONGO_PASSWORD', 'mongo')
