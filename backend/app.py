@@ -1,20 +1,20 @@
 from flask import Flask
 from pymongo import MongoClient
-import os
+from os import environ as e
 from flask import request
 from flask_cors import CORS
+from hashlib import sha256
+from flask import jsonify
+from datetime import datetime
 import random
 import datetime
 import time
-import hashlib
-from flask import jsonify
-from datetime import datetime
 
 # Get the MongoDB connection details from environment variables
-mongo_host = os.environ.get('MONGO_HOST', 'db') # 'db' is the default name of the MongoDB service within the Docker network TODO: change to localhost for local development 
-mongo_port = int(os.environ.get('MONGO_PORT', '27017'))
-mongo_username = os.environ.get('MONGO_USERNAME', 'root')
-mongo_password = os.environ.get('MONGO_PASSWORD', 'mongo')
+mongo_host = e.get('MONGO_HOST', 'db') # 'db' is the default name of the MongoDB service within the Docker network TODO: change to localhost for local development 
+mongo_port = int(e.get('MONGO_PORT', '27017'))
+mongo_username = e.get('MONGO_USERNAME', 'root')
+mongo_password = e.get('MONGO_PASSWORD', 'mongo')
 
 # Create a MongoDB client
 client = MongoClient(host=mongo_host, port=mongo_port, username=mongo_username, password=mongo_password)
@@ -30,7 +30,7 @@ def hash_input(input):
     input_bytes = input.encode('utf-8')
 
     # Create a hash object
-    hash_object = hashlib.sha256()
+    hash_object = sha256()
 
     # Update the hash object with the input bytes
     hash_object.update(input_bytes)
