@@ -79,12 +79,12 @@ b {
   font-weight: bold;
 }
 main {
-  color: #fff;
+  color: #000;
 }
 p {
   text-align: left;
   width: 100%;
-  color: #fff;
+  color: #000;
 }
 
 #loading-screen {

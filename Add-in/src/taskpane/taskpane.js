@@ -1,4 +1,4 @@
-const site = "https://s144272.devops-ap.be/api/site"; 
+const site = "https://s144272.devops-ap.be/api"; 
 //"http://localhost:9090/" // https://s139913.devopps.be/9090 https://s144272.devops-ap.be/api/site
 
 let initialAppState = document.getElementById("app-body").innerHTML;
@@ -65,15 +65,15 @@ function initializeData() {
     "sender_email": "",
     "datetime_received": 0,
     "subject": "",
-    "content":"",
-    "class":"",
-    "predicted_proba":0
+    "body":"",
+    "label":"",
+    "certainty":0 
   }
 }
 
 function updateData(data, new_data) {
-  data.class = new_data.label;
-  data.predicted_proba = 0.8 //new_data.label
+  data.label = new_data.label;
+  data.certainty = new_data.certainty
 }
 
 function updateDataOnItemChange(data) {
@@ -115,8 +115,8 @@ export async function display(data) {
   const item_class = document.getElementById("item-class")
   const item_proba = document.getElementById("item-proba")
 
-  item_class.innerHTML = "<b>Class:</b> <br/>" + data.class;
-  item_proba.innerHTML = "<b>Probability:</b> <br/>" + data.predicted_proba;
+  item_class.innerHTML = "<b>Class:</b> <br/>" + data.label;
+  item_proba.innerHTML = "<b>Probability:</b> <br/>" + data.certainty;
 }
 
 export async function checkServerStatus() {
@@ -140,7 +140,7 @@ export async function checkServerStatus() {
 
 export async function sendEmailBodyToServer(data) {
     document.getElementById("loading-screen").style.display = "block";
-    console.log(data.content);
+    console.log(data.body);
     try {
         const response = await fetch(site, {
             method: 'POST',
@@ -148,7 +148,7 @@ export async function sendEmailBodyToServer(data) {
                 'Source':"Outlook",
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ content: data.content }),
+            body: JSON.stringify({ body: data.body }),
         });
 
         if (!response.ok) {
@@ -156,11 +156,10 @@ export async function sendEmailBodyToServer(data) {
         }
         
         const responseData = await response.json();
-        const dummyData=0.8
         // Update the chart data
         console.log(responseData);
         xValues.push(xValues.length + 1); // add a new x-value
-        yValues.push(dummyData.toFixed(10)); // add a new y-value
+        yValues.push(responseData.certainty.toFixed(10)); // add a new y-value
         myChart.update();
 
         // Remove the check server button if it exists
