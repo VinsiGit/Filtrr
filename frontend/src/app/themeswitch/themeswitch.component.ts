@@ -41,7 +41,7 @@ export class ThemeswitchComponent {
       this.theme.textcolor = "#8e8ea7";
     } else {
       document.documentElement.style.setProperty('--shadow', '0px 1px 22px -12px #607D8B');
-      document.documentElement.style.setProperty('--nav-color', '#f05365');
+      document.documentElement.style.setProperty('--nav-color', '#f05964');
       document.documentElement.style.setProperty('--nav-color-hover', '#eb5364');
       document.documentElement.style.setProperty('--nav-color-text', 'white');
       document.documentElement.style.setProperty('--nav-color-background', 'white');

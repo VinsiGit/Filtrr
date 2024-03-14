@@ -2,7 +2,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr;
-    min-width: 98vw;
+    min-width: 96.5vw;
     width: 100%;
     gap: 2rem;
 }

@@ -34,6 +34,8 @@
   border-bottom-right-radius: 1.5rem;
   color: var(--nav-color-text);
   background-color: var(--nav-color);
+  display: flex;
+  gap: 1rem;
 }
 
 .navbar a, .navbar .switch {
@@ -103,5 +105,14 @@ h1 {
   padding-bottom: 1.5rem;
   font-size: 3rem;
   padding-left: 18vw;
+}
+
+.filtrr {
+  font-size: 3.5vw;
+}
+
+svg {
+  width: 3vw;
+  fill: var(--nav-color-text);
 }
 
