@@ -8,8 +8,8 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install the dependencies
-RUN npm install
 RUN npm install apexcharts ng-apexcharts --save --force
+RUN npm install
 
 # Copy the source code to the container
 COPY . .
