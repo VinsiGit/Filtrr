@@ -7,11 +7,10 @@ from hashlib import sha256
 from flask import jsonify
 from datetime import datetime
 import random
-import datetime
 import time
 
 # Get the MongoDB connection details from environment variables
-mongo_host = e.get('MONGO_HOST', 'db') # 'db' is the default name of the MongoDB service within the Docker network TODO: change to localhost for local development 
+mongo_host = e.get('MONGO_HOST', 'localhost') # 'db' is the default name of the MongoDB service within the Docker network TODO: change to localhost for local development 
 mongo_port = int(e.get('MONGO_PORT', '27017'))
 mongo_username = e.get('MONGO_USERNAME', 'root')
 mongo_password = e.get('MONGO_PASSWORD', 'mongo')
@@ -40,6 +39,19 @@ def hash_input(input):
 
     return hashed_input
 
+def perform_query(query):
+    # Perform the query
+    results = db.mails.find(query)
+
+    # Convert the results to a list of dicts
+    data = list(results)
+
+    # Optionally, you might want to exclude the '_id' field from the response
+    for item in data:
+        item.pop('_id', None)
+
+    return jsonify(data), 200
+
 @app.route('/api')
 def hello():
     return 'Filtrr api is running!'
@@ -52,6 +64,8 @@ def get_data():
     source = request.args.get('source')
     start_date_str = request.args.get('start_date')
     end_date_str = request.args.get('end_date')
+    
+    query = {}
 
     if start_date_str and end_date_str:
         start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
@@ -59,10 +73,18 @@ def get_data():
         # Ensure end_date is inclusive by moving to the end of the day
         end_date = end_date.replace(hour=23, minute=59, second=59)
     else:
-        return jsonify({"error": "Please provide both start_date and end_date query parameters in 'YYYY-MM-DD' format."}), 400
+        # Get the current date
+        today = datetime.now()
 
-    query = {}
-    
+        # Set the start date and end date to today
+        start_date = today.replace(hour=0, minute=0, second=0)
+        end_date = today.replace(hour=23, minute=59, second=59)
+
+        # Add the start_date and end_date filters to the query
+        query['date'] = {"$gte": start_date, "$lte": end_date}
+
+        return perform_query(query)
+
     # Add filters to the query if they are specified
     if rating is not None:
         query['rating'] = rating
@@ -73,19 +95,7 @@ def get_data():
     if start_date and end_date:
         query['date'] = {"$gte": start_date, "$lte": end_date}
 
-    print(query['date'])
-
-    # Perform the query
-    results = db.mails.find(query)
-
-    # Convert the results to a list of dicts
-    data = list(results)
-
-    # Optionally, you might want to exclude the '_id' field from the response
-    for item in data:
-        item.pop('_id', None)
-
-    return jsonify(data), 200
+    return perform_query(query)
 
 @app.route('/api', methods=['POST'])
 def add_mail():
@@ -100,6 +110,13 @@ def add_mail():
 
     # Add the source to the data
     hash = str(hash_input(data['body']))
+    existing_record = db.mails.find_one({"id": hash})
+    
+    if existing_record:
+        existing_record.pop('_id', None)
+        existing_record['already_exists'] = True
+        return jsonify(existing_record), 200
+    
 
     start_time = time.time()
 
@@ -124,7 +141,7 @@ def add_mail():
     "datetime_end": end_time,
     "datetime_elapsed": processing_time,
     "certainty": certainty,
-    "source": source
+    "source": source,
    }
 
     # Add the data to the database
