@@ -1,16 +1,14 @@
-from flask import Flask
+from flask import Flask , request, jsonify
+from flask_cors import CORS
 from pymongo import MongoClient
 from os import environ as e
-from flask import request
-from flask_cors import CORS
 from hashlib import sha256
-from flask import jsonify
 from datetime import datetime
+from time import time
 import random
-import time
 
 # Get the MongoDB connection details from environment variables
-mongo_host = e.get('MONGO_HOST', 'localhost') # 'db' is the default name of the MongoDB service within the Docker network TODO: change to localhost for local development 
+mongo_host = e.get('MONGO_HOST', 'db') # 'db' is the default name of the MongoDB service within the Docker network TODO: change to localhost for local development 
 mongo_port = int(e.get('MONGO_PORT', '27017'))
 mongo_username = e.get('MONGO_USERNAME', 'root')
 mongo_password = e.get('MONGO_PASSWORD', 'mongo')
@@ -39,24 +37,24 @@ def hash_input(input):
 
     return hashed_input
 
-def perform_query(query):
+def find_mails(query):
     # Perform the query
     results = db.mails.find(query)
 
     # Convert the results to a list of dicts
     data = list(results)
 
-    # Optionally, you might want to exclude the '_id' field from the response
+    # Exclude the '_id' field from the response
     for item in data:
         item.pop('_id', None)
 
-    return jsonify(data), 200
+    return data
 
 @app.route('/api')
 def hello():
     return 'Filtrr api is running!'
 
-@app.route('/api/analytics', methods=['GET'])
+@app.route('/api/stats', methods=['GET'])
 def get_data():
     # Extract query parameters
     rating = request.args.get('rating', type=float)
@@ -80,22 +78,39 @@ def get_data():
         start_date = today.replace(hour=0, minute=0, second=0)
         end_date = today.replace(hour=23, minute=59, second=59)
 
-        # Add the start_date and end_date filters to the query
-        query['date'] = {"$gte": start_date, "$lte": end_date}
-
-        return perform_query(query)
-
     # Add filters to the query if they are specified
     if rating is not None:
         query['rating'] = rating
+    else:    
+        rating = "all_ratings"
     if label:
         query['label'] = label
+    else:
+        label = "all_labels"
     if source:
         query['source'] = source
+    else:
+        source = "all_sources"
     if start_date and end_date:
         query['date'] = {"$gte": start_date, "$lte": end_date}
+    
+    mails = find_mails(query)
 
-    return perform_query(query)
+    average_certainty = sum(mail['certainty'] for mail in mails) / len(mails) if mails else 0
+    average_processing_time = sum(mail['datetime_elapsed'] for mail in mails) / len(mails) if mails else 0
+
+    report = {
+        "total": len(mails), 
+        "label": label, 
+        "rating": rating, 
+        "source": source, 
+        "start_date": start_date, 
+        "end_date": end_date, 
+        "average_certainty": average_certainty, 
+        "average_processing_time": average_processing_time
+    }
+
+    return jsonify(report), 200
 
 @app.route('/api', methods=['POST'])
 def add_mail():
@@ -118,11 +133,11 @@ def add_mail():
         return jsonify(existing_record), 200
     
 
-    start_time = time.time()
+    start_time = time()
 
     # TODO: process the data
 
-    end_time = time.time()
+    end_time = time()
     processing_time = end_time - start_time
 
     # Generate a random response
