@@ -1,26 +1,14 @@
 from flask import Flask , request, jsonify
 from flask_cors import CORS
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from pymongo import MongoClient
 from os import environ as e
 from hashlib import sha256
 from datetime import datetime
 from time import time
+from functools import wraps
 import random
-
-# Get the MongoDB connection details from environment variables
-mongo_host = e.get('MONGO_HOST', 'db') # 'db' is the default name of the MongoDB service within the Docker network TODO: change to localhost for local development 
-mongo_port = int(e.get('MONGO_PORT', '27017'))
-mongo_username = e.get('MONGO_USERNAME', 'root')
-mongo_password = e.get('MONGO_PASSWORD', 'mongo')
-
-# Create a MongoDB client
-client = MongoClient(host=mongo_host, port=mongo_port, username=mongo_username, password=mongo_password)
-
-# Get the MongoDB database
-db = client['filtrr_db']
-
-app = Flask(__name__)
-CORS(app)
 
 def hash_input(input):
     # Convert the input to bytes
@@ -50,11 +38,58 @@ def find_mails(query):
 
     return data
 
+# Get the MongoDB connection details from environment variables
+mongo_host = e.get('MONGO_HOST', 'db') # 'db' is the default name of the MongoDB service within the Docker network TODO: change to localhost for local development 
+mongo_port = int(e.get('MONGO_PORT', '27017'))
+mongo_username = e.get('MONGO_USERNAME', 'root')
+mongo_password = e.get('MONGO_PASSWORD', 'mongo')
+
+# Create a MongoDB client
+client = MongoClient(host=mongo_host, port=mongo_port, username=mongo_username, password=mongo_password)
+
+# Get the MongoDB database
+db = client['filtrr_db']
+
+app = Flask(__name__)
+app.config['JWT_SECRET_KEY'] = 'very_secret_key'
+CORS(app)
+jwt = JWTManager(app)
+
+users = {
+    'admin': {'password_hash': generate_password_hash('admin_password'), 'role': 'admin'},
+    'user': {'password_hash': generate_password_hash('user_password'), 'role': 'user'}
+}
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    username = request.json.get('username')
+    password = request.json.get('password')
+    user = users.get(username)
+    if user and check_password_hash(user['password_hash'], password):
+        # Include the user's role in the JWT
+        access_token = create_access_token(identity={'username': username, 'role': user['role']})
+        return jsonify(access_token=access_token), 200
+    return jsonify({"msg": "Bad username or password"}), 401
+
+def check_role(role):
+    def wrapper(fn):
+        @wraps(fn) 
+        @jwt_required()
+        def decorator(*args, **kwargs):
+            current_user = get_jwt_identity()
+            if current_user['role'] != role:
+                return jsonify({"msg": "Insufficient permissions"}), 403
+            return fn(*args, **kwargs)
+        return decorator
+    return wrapper
+
+
 @app.route('/api')
 def hello():
     return 'Filtrr api is running!'
 
 @app.route('/api/stats', methods=['GET'])
+@check_role('admin')
 def get_data():
     # Extract query parameters
     rating = request.args.get('rating', type=float)
@@ -113,6 +148,7 @@ def get_data():
     return jsonify(report), 200
 
 @app.route('/api', methods=['POST'])
+@check_role('user')
 def add_mail():
     if request.content_type != 'application/json':
         return jsonify({"error": "Unsupported Media Type"}), 415
@@ -169,6 +205,7 @@ def add_mail():
 
 
 @app.route('/api/rating', methods=['POST'])
+@check_role('user')
 def update_rating():
     data = request.json
 
