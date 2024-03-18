@@ -246,6 +246,13 @@ def update_rating():
     else:
         return "No documents matched the query. No update was made."
     
+@app.route('/api/settings', methods=['GET'])
+@check_role('admin')
+def get_settings():
+    # TODO: implement settings
+    # settings = db.settings.find_one()
+    # settings.pop('_id', None)
+    return jsonify({"settings": "TODO"}), 200
 
 
 if __name__ == '__main__':
