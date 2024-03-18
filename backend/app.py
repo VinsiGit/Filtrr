@@ -40,7 +40,7 @@ def find_mails(query):
     return data
 
 # Get the MongoDB connection details from environment variables
-mongo_host = e.get('MONGO_HOST', 'db') # 'db' is the default name of the MongoDB service within the Docker network TODO: change to localhost for local development 
+mongo_host = e.get('MONGO_HOST', 'localhost') # 'db' is the default name of the MongoDB service within the Docker network TODO: change to localhost for local development 
 mongo_port = int(e.get('MONGO_PORT', '27017'))
 mongo_username = e.get('MONGO_USERNAME', 'root')
 mongo_password = e.get('MONGO_PASSWORD', 'mongo')
@@ -118,58 +118,61 @@ def add_user():
 @check_role('admin', 'demo')
 def get_data():
     # Extract query parameters
-    rating = request.args.get('rating', type=float)
-    label = request.args.get('label')
-    source = request.args.get('source')
+    rating = request.args.get('rating', type=float, default="all_ratings")
+    label = request.args.get('label', default="all_labels")
+    source = request.args.get('source', default="all_sources")
     start_date_str = request.args.get('start_date')
     end_date_str = request.args.get('end_date')
     
-    query = {}
+    report = {
+        "rating": rating,
+        "label": label,
+        "source": source,
+        "start_date": start_date_str,
+        "end_date": end_date_str,
+        "data": []
+    }
 
     if start_date_str and end_date_str:
         start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
         end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
-        # Ensure end_date is inclusive by moving to the end of the day
-        end_date = end_date.replace(hour=23, minute=59, second=59)
     else:
         # Get the current date
         today = datetime.now()
-
         # Set the start date and end date to today
         start_date = today.replace(hour=0, minute=0, second=0)
         end_date = today.replace(hour=23, minute=59, second=59)
 
-    # Add filters to the query if they are specified
-    if rating is not None:
-        query['rating'] = rating
-    else:    
-        rating = "all_ratings"
-    if label:
-        query['label'] = label
-    else:
-        label = "all_labels"
-    if source:
-        query['source'] = source
-    else:
-        source = "all_sources"
-    if start_date and end_date:
-        query['date'] = {"$gte": start_date, "$lte": end_date}
-    
-    mails = find_mails(query)
 
-    average_certainty = sum(mail['certainty'] for mail in mails) / len(mails) if mails else 0
-    average_processing_time = sum(mail['datetime_elapsed'] for mail in mails) / len(mails) if mails else 0
+    current_date = start_date
+    while current_date <= end_date:
 
-    report = {
-        "total": len(mails), 
-        "label": label, 
-        "rating": rating, 
-        "source": source, 
-        "start_date": start_date, 
-        "end_date": end_date, 
-        "average_certainty": average_certainty, 
-        "average_processing_time": average_processing_time
-    }
+        day_start = current_date
+        day_end = current_date.replace(hour=23, minute=59, second=59)
+
+        # Add filters to the query if they are specified
+        query = {'date' :{"$gte": day_start, "$lte": day_end}}
+        if rating != "all_ratings":
+            query['rating'] = rating
+        if label != "all_labels":
+            query['label'] = label
+        if source != "all_sources":
+            query['source'] = source
+        
+        mails = find_mails(query)
+
+        average_certainty = sum(mail['certainty'] for mail in mails) / len(mails) if mails else 0
+        average_processing_time = sum(mail['datetime_elapsed'] for mail in mails) / len(mails) if mails else 0
+
+        report['data'].append({
+            "date": current_date.strftime('%Y-%m-%d'),
+            "total": len(mails),
+            "average_certainty": average_certainty,
+            "average_processing_time": average_processing_time
+        })
+
+        # Move to the next day
+        current_date += timedelta(days=1)
 
     return jsonify(report), 200
 
