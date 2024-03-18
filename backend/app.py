@@ -5,10 +5,11 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from pymongo import MongoClient
 from os import environ as e
 from hashlib import sha256
-from datetime import datetime
+from datetime import datetime, timedelta
 from time import time
 from functools import wraps
 import random
+
 
 def hash_input(input):
     # Convert the input to bytes
@@ -39,7 +40,7 @@ def find_mails(query):
     return data
 
 # Get the MongoDB connection details from environment variables
-mongo_host = e.get('MONGO_HOST', 'db') # 'db' is the default name of the MongoDB service within the Docker network TODO: change to localhost for local development 
+mongo_host = e.get('MONGO_HOST', 'localhost') # 'db' is the default name of the MongoDB service within the Docker network TODO: change to localhost for local development 
 mongo_port = int(e.get('MONGO_PORT', '27017'))
 mongo_username = e.get('MONGO_USERNAME', 'root')
 mongo_password = e.get('MONGO_PASSWORD', 'mongo')
@@ -51,45 +52,70 @@ client = MongoClient(host=mongo_host, port=mongo_port, username=mongo_username, 
 db = client['filtrr_db']
 
 app = Flask(__name__)
-app.config['JWT_SECRET_KEY'] = 'very_secret_key'
+app.config['JWT_SECRET_KEY'] = e.get('JWT_SECRET_KEY', 'very-secret-key')
 CORS(app)
 jwt = JWTManager(app)
 
-users = {
-    'admin': {'password_hash': generate_password_hash('admin_password'), 'role': 'admin'},
-    'user': {'password_hash': generate_password_hash('user_password'), 'role': 'user'}
-}
+users = [
+    {'username': 'admin', 'password_hash': generate_password_hash(e.get('ADMIN_PASSWORD', 'password')), 'role': 'admin'},
+    {'username': 'demo', 'password_hash': generate_password_hash('password'), 'role': 'demo'}
+]
 
-@app.route('/api/login', methods=['POST'])
-def login():
-    username = request.json.get('username')
-    password = request.json.get('password')
-    user = users.get(username)
-    if user and check_password_hash(user['password_hash'], password):
-        # Include the user's role in the JWT
-        access_token = create_access_token(identity={'username': username, 'role': user['role']})
-        return jsonify(access_token=access_token), 200
-    return jsonify({"msg": "Bad username or password"}), 401
-
-def check_role(role):
-    def wrapper(fn):
-        @wraps(fn) 
-        @jwt_required()
-        def decorator(*args, **kwargs):
-            current_user = get_jwt_identity()
-            if current_user['role'] != role:
-                return jsonify({"msg": "Insufficient permissions"}), 403
-            return fn(*args, **kwargs)
-        return decorator
-    return wrapper
-
+# Check if any users exist
+if db.users.count_documents({}) == 0:
+    # No users exist, insert new users
+    db.users.insert_many(users)
+    print("Users inserted.")
+else:
+    print("Users already exist in the database.")
 
 @app.route('/api')
 def hello():
     return 'Filtrr api is running!'
 
-@app.route('/api/stats', methods=['GET'])
+@app.route('/api/login', methods=['POST'])
+def login():
+    username = request.json.get('username')
+    password = request.json.get('password')
+    user = db.users.find_one({'username': username})
+    if user and check_password_hash(user['password_hash'], password):
+        # Include the user's role in the JWT
+        if user['role'] == 'demo':
+            access_token = create_access_token(identity={'username': username, 'role': user['role']}, expires_delta=timedelta(minutes=1))
+        else:
+            access_token = create_access_token(identity={'username': username, 'role': user['role']}, expires_delta=timedelta(hours=168))
+
+        return jsonify(access_token=access_token), 200
+    return jsonify({"msg": "Bad username or password"}), 401
+
+def check_role(*roles):
+    def wrapper(fn):
+        @wraps(fn) 
+        @jwt_required()
+        def decorator(*args, **kwargs):
+            current_user = get_jwt_identity()
+            if current_user['role'] not in roles:
+                return jsonify({"msg": "Insufficient permissions"}), 403
+            return fn(*args, **kwargs)
+        return decorator
+    return wrapper
+
+@app.route('/api/adduser', methods=['POST'])
 @check_role('admin')
+def add_user():
+    username = request.json.get('username')
+    password = request.json.get('password')
+    role = request.json.get('role')
+    if not username or not password or not role:
+        return jsonify({"msg": "Username, password and role are required"}), 400
+    if db.users.find_one({'username': username}):
+        return jsonify({"msg": "Username already exists"}), 400
+    db.users.insert_one({'username': username, 'password_hash': generate_password_hash(password), 'role': role})
+    return jsonify({"msg": "User added successfully"}), 200
+
+
+@app.route('/api/stats', methods=['GET'])
+@check_role('admin', 'demo')
 def get_data():
     # Extract query parameters
     rating = request.args.get('rating', type=float)
@@ -148,7 +174,7 @@ def get_data():
     return jsonify(report), 200
 
 @app.route('/api', methods=['POST'])
-@check_role('user')
+@check_role('admin', 'demo', 'user')
 def add_mail():
     if request.content_type != 'application/json':
         return jsonify({"error": "Unsupported Media Type"}), 415
@@ -205,7 +231,7 @@ def add_mail():
 
 
 @app.route('/api/rating', methods=['POST'])
-@check_role('user')
+@check_role('admin', 'demo', 'user')
 def update_rating():
     data = request.json
 
