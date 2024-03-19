@@ -40,7 +40,7 @@ def find_mails(query):
     return data
 
 # Get the MongoDB connection details from environment variables
-mongo_host = e.get('MONGO_HOST', 'db') # 'db' is the default name of the MongoDB service within the Docker network TODO: change to localhost for local development 
+mongo_host = e.get('MONGO_HOST', 'localhost') # 'db' is the default name of the MongoDB service within the Docker network TODO: change to localhost for local development 
 mongo_port = int(e.get('MONGO_PORT', '27017'))
 mongo_username = e.get('MONGO_USERNAME', 'root')
 mongo_password = e.get('MONGO_PASSWORD', 'mongo')
@@ -56,6 +56,7 @@ app.config['JWT_SECRET_KEY'] = e.get('JWT_SECRET_KEY', 'very-secret-key')
 CORS(app)
 jwt = JWTManager(app)
 
+# Create a list of users
 users = [
     {'username': 'admin', 'password_hash': generate_password_hash(e.get('ADMIN_PASSWORD', 'password')), 'role': 'admin'},
     {'username': 'demo', 'password_hash': generate_password_hash('password'), 'role': 'demo'}
@@ -72,6 +73,7 @@ else:
 @app.route('/api')
 def hello():
     return 'Filtrr api is running!'
+
 
 @app.route('/api/login', methods=['POST'])
 def login():
@@ -100,11 +102,13 @@ def check_role(*roles):
         return decorator
     return wrapper
 
+
 @app.route('/api/users', methods=['GET'])
 @check_role('admin')
 def get_users():
     users = db.users.find({}, {'_id': False, 'password_hash': False})
     return jsonify(list(users)), 200
+
 
 @app.route('/api/users', methods=['POST'])
 @check_role('admin')
@@ -118,6 +122,7 @@ def add_user():
         return jsonify({"msg": "Username already exists"}), 400
     db.users.insert_one({'username': username, 'password_hash': generate_password_hash(password), 'role': role})
     return jsonify({"msg": "User added successfully"}), 200
+
 
 @app.route('/api/users', methods=['PUT'])
 @check_role('admin')
@@ -139,6 +144,7 @@ def update_user():
         return jsonify({"msg": "User updated successfully"}), 200
     return jsonify({"msg": "User not found"}), 404
 
+
 @app.route('/api/users', methods=['DELETE'])
 @check_role('admin')
 def delete_user():
@@ -151,6 +157,34 @@ def delete_user():
     if result.deleted_count > 0:
         return jsonify({"msg": "User deleted successfully"}), 200
     return jsonify({"msg": "User not found"}), 404
+
+
+@app.route('/api/mails', methods=['GET'])
+@check_role('admin', 'demo')
+def get_mails():
+    # Extract query parameters
+    rating = request.args.get('rating', type=float, default="all_ratings")
+    label = request.args.get('label', default="all_labels")
+    source = request.args.get('source', default="all_sources")
+    start_date_str = request.args.get('start_date')
+    end_date_str = request.args.get('end_date')
+    
+    # Add filters to the query if they are specified
+    query = {}
+    if rating != "all_ratings":
+        query['rating'] = rating
+    if label != "all_labels":
+        query['label'] = label
+    if source != "all_sources":
+        query['source'] = source
+    if start_date_str and end_date_str:
+        start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+        end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
+        query['date'] = {"$gte": start_date, "$lte": end_date}
+
+    mails = find_mails(query)
+
+    return jsonify(mails), 200
 
 
 @app.route('/api/stats', methods=['GET'])
@@ -214,6 +248,7 @@ def get_data():
         current_date += timedelta(days=1)
 
     return jsonify(report), 200
+
 
 @app.route('/api', methods=['POST'])
 @check_role('admin', 'demo', 'user')
