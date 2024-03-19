@@ -40,7 +40,7 @@ def find_mails(query):
     return data
 
 # Get the MongoDB connection details from environment variables
-mongo_host = e.get('MONGO_HOST', 'localhost') # 'db' is the default name of the MongoDB service within the Docker network TODO: change to localhost for local development 
+mongo_host = e.get('MONGO_HOST', 'db') # 'db' is the default name of the MongoDB service within the Docker network TODO: change to localhost for local development 
 mongo_port = int(e.get('MONGO_PORT', '27017'))
 mongo_username = e.get('MONGO_USERNAME', 'root')
 mongo_password = e.get('MONGO_PASSWORD', 'mongo')
@@ -100,7 +100,13 @@ def check_role(*roles):
         return decorator
     return wrapper
 
-@app.route('/api/adduser', methods=['POST'])
+@app.route('/api/users', methods=['GET'])
+@check_role('admin')
+def get_users():
+    users = db.users.find({}, {'_id': False, 'password_hash': False})
+    return jsonify(list(users)), 200
+
+@app.route('/api/users', methods=['POST'])
 @check_role('admin')
 def add_user():
     username = request.json.get('username')
@@ -112,6 +118,39 @@ def add_user():
         return jsonify({"msg": "Username already exists"}), 400
     db.users.insert_one({'username': username, 'password_hash': generate_password_hash(password), 'role': role})
     return jsonify({"msg": "User added successfully"}), 200
+
+@app.route('/api/users', methods=['PUT'])
+@check_role('admin')
+def update_user():
+    username = request.json.get('username')
+    new_password = request.json.get('password')
+    new_role = request.json.get('role')
+    if not username:
+        return jsonify({"msg": "Username is required"}), 400
+    update = {}
+    if new_password:
+        update['password_hash'] = generate_password_hash(new_password)
+    if new_role:
+        update['role'] = new_role
+    if not update:
+        return jsonify({"msg": "Password or role is required"}), 400
+    result = db.users.update_one({'username': username}, {"$set": update})
+    if result.modified_count > 0:
+        return jsonify({"msg": "User updated successfully"}), 200
+    return jsonify({"msg": "User not found"}), 404
+
+@app.route('/api/users', methods=['DELETE'])
+@check_role('admin')
+def delete_user():
+    username = request.json.get('username')
+    if not username:
+        return jsonify({"msg": "Username is required"}), 400
+    if username == 'admin':
+        return jsonify({"msg": "Cannot delete admin user"}), 400
+    result = db.users.delete_one({'username': username})
+    if result.deleted_count > 0:
+        return jsonify({"msg": "User deleted successfully"}), 200
+    return jsonify({"msg": "User not found"}), 404
 
 
 @app.route('/api/stats', methods=['GET'])
@@ -233,7 +272,7 @@ def add_mail():
     return jsonify(response), 200
 
 
-@app.route('/api/rating', methods=['POST'])
+@app.route('/api/rating', methods=['PUT'])
 @check_role('admin', 'demo', 'user')
 def update_rating():
     data = request.json
@@ -248,6 +287,7 @@ def update_rating():
         return "Rating updated successfully."
     else:
         return "No documents matched the query. No update was made."
+
     
 @app.route('/api/settings', methods=['GET'])
 @check_role('admin')
