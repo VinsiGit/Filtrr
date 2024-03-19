@@ -70,6 +70,14 @@ if db.users.count_documents({}) == 0:
 else:
     print("Users already exist in the database.")
 
+# Check if the settings exist
+if db.settings.count_documents({}) == 0:
+    # No settings exist, insert new settings
+    # TODO db.settings.insert_one({'setting': 'value'})
+    print("No settings exist in the database.")
+else:
+    print("Settings already exist in the database.")
+
 @app.route('/api')
 def hello():
     return 'Filtrr api is running!'
