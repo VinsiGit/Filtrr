@@ -210,7 +210,7 @@ def get_data():
         end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
     else:
         first_mail = db.mails.find_one()
-        if first_mail['date']:
+        if first_mail:
             start_date = first_mail['date'] 
         else:
             start_date = datetime.now()
