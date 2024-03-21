@@ -46,7 +46,7 @@ export class MailamountgraphComponent implements OnInit{
   datapoints_irrelevant: number[] = [];
   datapoints_bi_eng: number[] = [];
   datapoints_data_eng: number[] = [];
-  days: string[] = [];
+  days: string[] = [""];
 
   constructor(private theme: ThemeService, private route: ActivatedRoute, private data: AnalyticsdataService) {
   }
@@ -56,6 +56,7 @@ export class MailamountgraphComponent implements OnInit{
     this.renderChart();
   }
 
+  //instanciating the chart
   renderChart() {
     this.chartOptions = {
       series: [
@@ -136,6 +137,7 @@ export class MailamountgraphComponent implements OnInit{
     };
   }
 
+  //loading the data
   async loadChartData(): Promise<void> {
     const today = new Date();
     const tenDaysAgo = new Date();
