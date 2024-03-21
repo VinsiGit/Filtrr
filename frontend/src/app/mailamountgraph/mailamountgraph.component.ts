@@ -1,4 +1,4 @@
-import { Component, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { ThemeService } from "../theme.service";
 
 import {
@@ -15,6 +15,9 @@ import {
   ApexLegend,
   ApexYAxis,
 } from "ng-apexcharts";
+import { ActivatedRoute } from "@angular/router";
+import { AnalyticsdataService } from "../analyticsdata.service";
+import { DayData, LabelData } from "../dataresponse";
 
 export interface ChartOptions {
   series: ApexAxisChartSeries;
@@ -37,25 +40,36 @@ export interface ChartOptions {
   styleUrls: ['./mailamountgraph.component.css']
 })
 
-export class MailamountgraphComponent {
+export class MailamountgraphComponent implements OnInit{
   @ViewChild("chart") chart: ChartComponent | undefined;
   public chartOptions: Partial<ChartOptions> | any;
+  datapoints_irrelevant: number[] = [];
+  datapoints_bi_eng: number[] = [];
+  datapoints_data_eng: number[] = [];
+  days: string[] = [];
 
+  constructor(private theme: ThemeService, private route: ActivatedRoute, private data: AnalyticsdataService) {
+  }
+  
+  async ngOnInit(): Promise<void> {
+    await this.loadChartData();
+    this.renderChart();
+  }
 
-  constructor(private theme: ThemeService) {
+  renderChart() {
     this.chartOptions = {
       series: [
         {
           name: "irrelevant",
-          data: [14, 18, 8, 5, 7, 2, 1],
+          data: this.datapoints_irrelevant,
         },
         {
           name: "bi-engineer",
-          data: [8, 12, 12, 13, 10, 8, 12],
+          data: this.datapoints_bi_eng,
         },
         {
           name: "data-engineer",
-          data: [4, 17, 2, 1, 8, 8, 5],
+          data: this.datapoints_data_eng,
         },
       ],
       chart: {
@@ -96,7 +110,7 @@ export class MailamountgraphComponent {
         },
       },
       xaxis: {
-        categories: ["ma", "di", "woe", "do", "vrij", "zat", "zon"],
+        categories: this.days,
         axisBorder: {
           show: false,
         },
@@ -120,5 +134,41 @@ export class MailamountgraphComponent {
         },
       },
     };
+  }
+
+  async loadChartData(): Promise<void> {
+    const today = new Date();
+    const tenDaysAgo = new Date();
+    tenDaysAgo.setDate(today.getDate() - 10);
+    
+    const labels = ['BI_ENGINEER', 'DATA_ENGINEER', 'IRRELEVANT'];
+
+    for (const label of labels) {
+      const labelData: LabelData = await this.data.getDataBetween(tenDaysAgo, today, label);
+      const datapoints: number[] = [];
+      // filling in the days is still janky -> change this by maybe making use of a json or interface or something
+      this.days = []
+
+      // Update datapoints array with total for each day
+      labelData.data.forEach((dayData: DayData) => {
+        datapoints.push(dayData.total);
+        this.days.push(dayData.date);
+      });
+
+      // Update respective datapoints array based on label
+      switch (label) {
+        case 'BI_ENGINEER':
+          this.datapoints_bi_eng = datapoints;
+          break;
+        case 'DATA_ENGINEER':
+          this.datapoints_data_eng = datapoints;
+          break;
+        case 'IRRELEVANT':
+          this.datapoints_irrelevant = datapoints;
+          break;
+        default:
+          break;
+      }
+    }
   }
 }
