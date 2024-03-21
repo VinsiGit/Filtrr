@@ -15,10 +15,9 @@ export class ThemeswitchComponent {
       // If 'darkMode' item is not present, set default value to false
       this.darkModeEnabled = false;
     } else {
-      // If 'darkMode' item is present, retrieve its value
       // somewhat janky way to convert "true" or "false" back to bool, but it works and is short
       this.darkModeEnabled = localStorage.getItem('darkMode') === "true";
-      console.log(this.darkModeEnabled)
+      console.log(this.darkModeEnabled);
     }
     this.applyTheme();
   }
@@ -26,10 +25,7 @@ export class ThemeswitchComponent {
   toggleDarkMode() {
     this.darkModeEnabled = !this.darkModeEnabled;
     //save user preference to localstorage
-    console.log(this.darkModeEnabled);
-    localStorage.setItem('darkMode', this.darkModeEnabled.toString())
-    console.log(this.darkModeEnabled);
-    console.log(localStorage.getItem('darkMode'));
+    localStorage.setItem('darkMode', this.darkModeEnabled.toString());
     this.applyTheme();
   }
 

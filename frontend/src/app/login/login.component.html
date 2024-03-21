@@ -1,0 +1,16 @@
+<!-- src/app/login/login.component.html -->
+<div class="module">
+    <form (submit)="login()">
+      <div>
+        <label for="username">Username:</label>
+        <input type="text" [(ngModel)]="username" name="username" required>
+      </div>
+      <div>
+        <label for="password">Password:</label>
+        <input type="password" [(ngModel)]="password" name="password" required>
+      </div>
+      <button type="submit">Login</button>
+      <p *ngIf="errorMessage">{{ errorMessage }}</p>
+    </form>
+  </div>
+  
