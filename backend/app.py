@@ -218,8 +218,8 @@ def get_data():
         "rating": rating,
         "label": label,
         "source": source,
-        "start_date": start_date.strftime('%Y-%m-%d'),
-        "end_date": end_date.strftime('%Y-%m-%d'),
+        "start_date": start_date,
+        "end_date": end_date,
         "data": []
     }
 
