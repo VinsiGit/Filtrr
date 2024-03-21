@@ -60,7 +60,7 @@ export class MailamountgraphComponent {
       ],
       chart: {
         redrawOnParentResize: true,
-        id: "test",
+        id: "mailAmountGraph",
         type: 'area',
         zoom: {
           enabled: true,

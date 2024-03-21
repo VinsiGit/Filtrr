@@ -11,11 +11,56 @@ export class ThemeswitchComponent {
   darkModeEnabled: boolean = false;
 
   constructor(public theme: ThemeService) {
+    if (localStorage.getItem('darkMode') === null) {
+      // If 'darkMode' item is not present, set default value to false
+      this.darkModeEnabled = false;
+    } else {
+      // If 'darkMode' item is present, retrieve its value
+      // somewhat janky way to convert "true" or "false" back to bool, but it works and is short
+      this.darkModeEnabled = localStorage.getItem('darkMode') === "true";
+      console.log(this.darkModeEnabled)
+    }
+    this.applyTheme();
   }
 
   toggleDarkMode() {
     this.darkModeEnabled = !this.darkModeEnabled;
+    //save user preference to localstorage
+    console.log(this.darkModeEnabled);
+    localStorage.setItem('darkMode', this.darkModeEnabled.toString())
+    console.log(this.darkModeEnabled);
+    console.log(localStorage.getItem('darkMode'));
     this.applyTheme();
+  }
+
+  updateCharts() {
+    //updating chart colors and rerendering the chart
+    //email amount chart
+    ApexCharts.exec('mailAmountGraph', 'updateOptions', {
+      colors: [this.theme.irrelevant_color, this.theme.label1color, this.theme.label2color],
+      grid: {
+        borderColor: this.theme.gridcolor,
+      },
+      xaxis: {
+        labels: {
+          style: {
+            colors: this.theme.textcolor,
+          },
+        },
+      },
+      yaxis: {
+        labels: {
+          style: {
+            colors: this.theme.textcolor,
+          },
+        },
+      },
+    }, true, true, true);
+    
+    //paste-in response chart
+    ApexCharts.exec('certaintyWheel', 'updateOptions', {
+      colors: [this.theme.label1color]
+    }, true, true, true);
   }
 
   applyTheme() {
@@ -60,30 +105,7 @@ export class ThemeswitchComponent {
       this.theme.label2color = "#b872de";
       this.theme.textcolor = "#8e8ea7";
     }
-
-    //updating chart colors and rerendering the chart
-    ApexCharts.exec('test', 'updateOptions', {
-      colors: [this.theme.irrelevant_color, this.theme.label1color, this.theme.label2color],
-      grid: {
-        borderColor: this.theme.gridcolor,
-      },
-      xaxis: {
-        labels: {
-          style: {
-            colors: this.theme.textcolor,
-          },
-        },
-      },
-      yaxis: {
-        labels: {
-          style: {
-            colors: this.theme.textcolor,
-          },
-        },
-      },
-    }, true, true, true);
-    ApexCharts.exec('certaintyWheel', 'updateOptions', {
-      colors: [this.theme.label1color]
-    }, true, true, true);
+    //update chart colors
+    this.updateCharts()
   }
 }
