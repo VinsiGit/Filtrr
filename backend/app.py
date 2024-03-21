@@ -40,7 +40,7 @@ def find_mails(query):
     return data
 
 # Get the MongoDB connection details from environment variables
-mongo_host = e.get('MONGO_HOST', 'db') # 'db' is the default name of the MongoDB service within the Docker network TODO: change to localhost for local development 
+mongo_host = e.get('MONGO_HOST', 'localhost') # 'db' is the default name of the MongoDB service within the Docker network TODO: change to localhost for local development 
 mongo_port = int(e.get('MONGO_PORT', '27017'))
 mongo_username = e.get('MONGO_USERNAME', 'root')
 mongo_password = e.get('MONGO_PASSWORD', 'mongo')
@@ -205,25 +205,23 @@ def get_data():
     start_date_str = request.args.get('start_date')
     end_date_str = request.args.get('end_date')
     
-    report = {
-        "rating": rating,
-        "label": label,
-        "source": source,
-        "start_date": start_date_str,
-        "end_date": end_date_str,
-        "data": []
-    }
-
     if start_date_str and end_date_str:
         start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
         end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
     else:
-        # Get the current date
-        today = datetime.now()
-        # Set the start date and end date to today
-        start_date = today.replace(hour=0, minute=0, second=0)
-        end_date = today.replace(hour=23, minute=59, second=59)
+        first_mail = db.mails.find_one()
+        start_date = first_mail['date'] if first_mail else datetime.now()
+        print(start_date)
+        end_date = datetime.now()
 
+    report = {
+        "rating": rating,
+        "label": label,
+        "source": source,
+        "start_date": start_date.strftime('%Y-%m-%d'),
+        "end_date": end_date.strftime('%Y-%m-%d'),
+        "data": []
+    }
 
     current_date = start_date
     while current_date <= end_date:
