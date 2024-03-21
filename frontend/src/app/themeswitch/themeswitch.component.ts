@@ -80,7 +80,7 @@ export class ThemeswitchComponent {
       this.theme.label1color = "#f05365";
       this.theme.label2color = "#f5a623";
       this.theme.textcolor = "#8e8ea7";
-      this.theme.irrelevant_color = "#444152";
+      this.theme.irrelevant_color = "#47426b";
     } else {
       document.documentElement.style.setProperty('--shadow', '0px 1px 22px -12px #607D8B');
       document.documentElement.style.setProperty('--nav-color', '#f05964');
