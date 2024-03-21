@@ -211,7 +211,7 @@ def get_data():
     else:
         first_mail = db.mails.find_one()
         start_date = first_mail['date'] if first_mail else datetime.now()
-        print(start_date)
+        print(type(start_date))
         end_date = datetime.now()
 
     report = {
