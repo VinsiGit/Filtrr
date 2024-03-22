@@ -74,6 +74,7 @@ export class MailamountgraphComponent implements OnInit{
         },
       ],
       chart: {
+        foreColor: this.theme.textcolor,
         redrawOnParentResize: true,
         id: "mailAmountGraph",
         type: 'area',
@@ -111,20 +112,21 @@ export class MailamountgraphComponent implements OnInit{
         },
       },
       xaxis: {
+        type: 'datetime',
         categories: this.days,
         axisBorder: {
           show: false,
         },
         labels: {
           style: {
-            colors: this.theme.textcolor,
+            colors: this.theme.axistextcolor,
           },
         },
       },
       yaxis: {
         labels: {
           style: {
-            colors: this.theme.textcolor,
+            colors: this.theme.axistextcolor,
           },
         },
       },

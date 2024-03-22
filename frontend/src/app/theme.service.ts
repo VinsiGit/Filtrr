@@ -8,5 +8,6 @@ export class ThemeService {
   label1color: string = "#6460af";
   label2color: string = "#b872de";
   textcolor: string = "#8e8ea7";
+  axistextcolor: string = "#8e8ea7";
   irrelevant_color: string = '#7961f1'
 }

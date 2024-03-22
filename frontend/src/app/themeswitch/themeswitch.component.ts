@@ -33,6 +33,9 @@ export class ThemeswitchComponent {
     //updating chart colors and rerendering the chart
     //email amount chart
     ApexCharts.exec('mailAmountGraph', 'updateOptions', {
+      chart: {
+        foreColor: this.theme.textcolor,
+      },
       colors: [this.theme.irrelevant_color, this.theme.label1color, this.theme.label2color],
       grid: {
         borderColor: this.theme.gridcolor,
@@ -40,14 +43,14 @@ export class ThemeswitchComponent {
       xaxis: {
         labels: {
           style: {
-            colors: this.theme.textcolor,
+            colors: this.theme.axistextcolor,
           },
         },
       },
       yaxis: {
         labels: {
           style: {
-            colors: this.theme.textcolor,
+            colors: this.theme.axistextcolor,
           },
         },
       },
@@ -79,7 +82,8 @@ export class ThemeswitchComponent {
       this.theme.gridcolor = "#47426b";
       this.theme.label1color = "#f05365";
       this.theme.label2color = "#f5a623";
-      this.theme.textcolor = "#8e8ea7";
+      this.theme.textcolor = "#edf2f9";
+      this.theme.axistextcolor = "#8e8ea7";
       this.theme.irrelevant_color = "#47426b";
     } else {
       document.documentElement.style.setProperty('--shadow', '0px 1px 22px -12px #607D8B');
@@ -100,7 +104,8 @@ export class ThemeswitchComponent {
       this.theme.gridcolor = "#f2f2f2";
       this.theme.label1color = "#6460af";
       this.theme.label2color = "#b872de";
-      this.theme.textcolor = "#8e8ea7";
+      this.theme.textcolor = "#46494c";
+      this.theme.axistextcolor = "#8e8ea7";
       this.theme.irrelevant_color = "#DBDEE4";
     }
     //update chart colors
