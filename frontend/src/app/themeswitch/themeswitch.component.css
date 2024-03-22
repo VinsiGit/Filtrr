@@ -23,6 +23,64 @@
     border-radius: 50%;
     transition: all 0.6s;
   }
+
+  .cloud, .stars {
+    position: absolute;
+    top: 12px;
+  }
+
+  .cloud {
+    left: 60%;
+  }
+
+  .stars {
+    right: 60%;
+  }
+
+  .cloud1, .cloud2, .cloud3, .star1, .star2, .star3 {
+    position: absolute;
+    border-radius: 50%;
+    background-color: white;
+  }
+
+  .cloud1 {
+    top: 7px;
+    width: 14px;
+    height: 8px;
+  }
+
+  .cloud2 {
+    top: 5px;
+    width: 14px;
+    height: 10px;
+    left: 7px;
+  }
+
+  .cloud3 {
+    width: 14px;
+    height: 12px;
+    left: 3px;
+  }
+
+  .star1 {
+    width: 3px;
+    height: 3px;
+    right: 2px;
+  }
+
+  .star2 {
+    top: 3px;
+    width: 4px;
+    height: 4px;
+    right: 12px;
+  }
+
+  .star3 {
+    top: 12px;
+    width: 5px;
+    height: 5px;
+    right: 0px;
+  }
   
   .radio-btn .radio-inner::before {
     content: "";
