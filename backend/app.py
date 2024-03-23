@@ -26,18 +26,6 @@ def hash_input(input):
 
     return hashed_input
 
-def find_mails(query):
-    # Perform the query
-    results = db.mails.find(query)
-
-    # Convert the results to a list of dicts
-    data = list(results)
-
-    # Exclude the '_id' field from the response
-    for item in data:
-        item.pop('_id', None)
-
-    return data
 
 # Get the MongoDB connection details from environment variables
 mongo_host = e.get('MONGO_HOST', 'db') # 'db' is the default name of the MongoDB service within the Docker network TODO: change to localhost for local development 
@@ -190,9 +178,18 @@ def get_mails():
         end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
         query['date'] = {"$gte": start_date, "$lte": end_date}
 
-    mails = find_mails(query)
+    # Perform the query
+    results = db.mails.find(query)
 
-    return jsonify(mails), 200
+    # Convert the results to a list of dicts
+    data = list(results)
+
+    # Exclude the '_id' field from the response
+    for item in data:
+        item.pop('_id', None)
+
+    
+    return jsonify(data), 200
 
 
 @app.route('/api/stats', methods=['GET'])
@@ -216,46 +213,122 @@ def get_data():
             start_date = datetime.now()
         end_date = datetime.now()
 
-    report = {
-        "rating": rating,
-        "label": label,
-        "source": source,
-        "start_date": start_date,
-        "end_date": end_date,
-        "data": []
+
+    # Add filters to the query if they are specified
+    query = {'date' :{"$gte": start_date, "$lte": end_date}}
+    if rating != "all_ratings":
+        query['rating'] = rating
+    if source != "all_sources":
+        query['source'] = source
+
+    if label == "all_labels":
+    # Query for Unique Labels
+        unique_labels_pipeline = [
+            {"$match": {"date": {"$gte": start_date, "$lt": end_date}}},
+            {"$group": {"_id": None, "labels": {"$addToSet": "$label"}}}
+        ]
+
+        unique_labels_result = db.mails.aggregate(unique_labels_pipeline)
+        unique_labels = next(unique_labels_result, {}).get('labels', [])
+    else:
+        unique_labels = [label]
+
+    # Dynamically Build Aggregation Pipeline
+    group_stage = {
+        "$group": {
+            "_id": {
+                "$dateToString": {"format": "%Y-%m-%d", "date": "$date"}
+            },
+            "total": {"$sum": 1},
+            "average_processing_time": {"$avg": "$datetime_elapsed"}
+        }
     }
 
-    current_date = start_date
-    while current_date <= end_date:
+    for label in unique_labels:
+        group_stage["$group"][label] = {
+            "$sum": {
+                "$cond": [{"$eq": ["$label", label]}, 1, 0]
+            }
+        }
 
-        day_start = current_date
-        day_end = current_date.replace(hour=23, minute=59, second=59)
-
-        # Add filters to the query if they are specified
-        query = {'date' :{"$gte": day_start, "$lte": day_end}}
-        if rating != "all_ratings":
-            query['rating'] = rating
-        if label != "all_labels":
-            query['label'] = label
-        if source != "all_sources":
-            query['source'] = source
+    pipeline = [
+        {"$match": query},
+        group_stage,
+        {"$sort": {"_id": 1}},
+        {"$addFields": {"date": "$_id" }},
+        {"$project": {"_id": 0} }
+    ]
         
-        mails = find_mails(query)
 
-        average_certainty = sum(mail['certainty'] for mail in mails) / len(mails) if mails else 0
-        average_processing_time = sum(mail['datetime_elapsed'] for mail in mails) / len(mails) if mails else 0
+    # Execute the aggregation query
+    count = db.mails.count_documents(query)
+    results = db.mails.aggregate(pipeline)
 
-        report['data'].append({
-            "date": current_date.strftime('%Y-%m-%d'),
-            "total": len(mails),
-            "average_certainty": average_certainty,
-            "average_processing_time": average_processing_time
-        })
+    # Convert the results to a list of dicts
+    json_result = list(results)
 
-        # Move to the next day
-        current_date += timedelta(days=1)
+
+    report = {
+        "start_date": start_date.strftime('%Y-%m-%d'),
+        "end_date": end_date.strftime('%Y-%m-%d'),
+        "labels": unique_labels,
+        "data": json_result,
+        "rating": rating,
+        "source": source,
+        "total": count
+    }
+
 
     return jsonify(report), 200
+
+@app.route('/api/certainty', methods=['GET'])
+@check_role('admin', 'demo')
+def get_cetainty():
+    # Extract query parameters
+    source = request.args.get('source', default="all_sources")
+    start_date_str = request.args.get('start_date')
+    end_date_str = request.args.get('end_date')
+
+    if start_date_str and end_date_str:
+        start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+        end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
+    else:
+        first_mail = db.mails.find_one()
+        if first_mail:
+            start_date = first_mail['date'] 
+        else:
+            start_date = datetime.now()
+        end_date = datetime.now()
+
+
+    # Add filters to the query if they are specified
+    query = {'date' :{"$gte": start_date, "$lte": end_date}}
+    if source != "all_sources":
+        query['source'] = source
+    
+    pipeline = [
+        {"$match": query},
+        {"$group": {"_id": "$label", "average_certainty": {"$avg": "$certainty"}}},
+        {"$sort": {"average_certainty": -1}},
+        {"$addFields": {"label": "$_id" }},
+        {"$project": {"_id": 0} }
+    ]
+
+    results = db.mails.aggregate(pipeline)
+
+    # Convert the results to a list of dicts
+    json_result = list(results)
+
+    report = {
+    "start_date": start_date.strftime('%Y-%m-%d'),
+    "end_date": end_date.strftime('%Y-%m-%d'),
+    "data": json_result,
+    "source": source
+    }
+
+    
+    return jsonify(report), 200
+    
 
 
 @app.route('/api', methods=['POST'])
@@ -299,8 +372,6 @@ def add_mail():
     "date": datetime.now(),
     "keywords": keywords,
     "rating": 0,
-    "datetime_start": start_time,
-    "datetime_end": end_time,
     "datetime_elapsed": processing_time,
     "certainty": certainty,
     "source": source,
@@ -309,8 +380,8 @@ def add_mail():
     # Add the data to the database
     db.mails.insert_one(response.copy())
 
-    # Remove the id from the response
-    response.pop('id', None)
+    # Remove the 'source' field from the response
+    response.pop('source', None)
 
     return jsonify(response), 200
 
