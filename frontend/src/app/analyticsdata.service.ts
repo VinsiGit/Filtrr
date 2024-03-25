@@ -11,7 +11,7 @@ export class AnalyticsdataService {
   constructor(private http: HttpClient) { }
 
   private getQueryData(params: string): Promise<LabelData> {
-    return lastValueFrom(this.http.get<LabelData>(`https://s144272.devops-ap.be/api/stats?${params}`));
+    return lastValueFrom(this.http.get<LabelData>(`https://s144272.devops-ap.be/api/stats${params}`));
   }
 
   private formatDate(date: Date): string {
@@ -21,19 +21,15 @@ export class AnalyticsdataService {
     return `${year}-${month}-${day}`;
   }
 
-  async getDataBetween(start_date: Date | undefined, end_date: Date | undefined, label: string = 'all'): Promise<LabelData> {
+  async getDataBetween(start_date: Date | undefined, end_date: Date | undefined): Promise<LabelData> {
     let queryParams = '';
 
     if (start_date) {
-      queryParams += `start_date=${this.formatDate(start_date)}&`;
+      queryParams += `?start_date=${this.formatDate(start_date)}&`;
     }
 
     if (end_date) {
-      queryParams += `end_date=${this.formatDate(end_date)}&`;
-    }
-
-    if (label !== 'all') {
-      queryParams += `label=${label}`;
+      queryParams += `end_date=${this.formatDate(end_date)}`;
     }
 
     return await this.getQueryData(queryParams);

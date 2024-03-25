@@ -43,17 +43,21 @@ export interface ChartOptions {
 export class MailamountgraphComponent implements OnInit{
   @ViewChild("chart") chart: ChartComponent | undefined;
   public chartOptions: Partial<ChartOptions> | any;
-  datapoints_irrelevant: number[] = [];
+  /*
+  datapoints: ApexAxisChartSeries = [];
+  */
   datapoints_bi_eng: number[] = [];
   datapoints_data_eng: number[] = [];
-  days: string[] = [""];
+  datapoints_irrelevant: number[] = [];
+  days: string[] = [];
 
   constructor(private theme: ThemeService, private route: ActivatedRoute, private data: AnalyticsdataService) {
   }
   
   async ngOnInit(): Promise<void> {
-    await this.loadChartData();
-    this.renderChart();
+    await this.loadChartData().then(() => {
+      this.renderChart();
+    });
   }
 
   //instanciating the chart
@@ -65,16 +69,16 @@ export class MailamountgraphComponent implements OnInit{
           data: this.datapoints_irrelevant,
         },
         {
-          name: "bi-engineer",
+          name: "bi engineer",
           data: this.datapoints_bi_eng,
         },
         {
-          name: "data-engineer",
+          name: "data engineer",
           data: this.datapoints_data_eng,
         },
-      ],
+      ],  
       chart: {
-        foreColor: this.theme.textcolor,
+        foreColor: this.theme.chart_textcolor,
         redrawOnParentResize: true,
         id: "mailAmountGraph",
         type: 'area',
@@ -103,7 +107,7 @@ export class MailamountgraphComponent implements OnInit{
         align: "left",
       },
       grid: {
-        borderColor: this.theme.gridcolor,
+        borderColor: this.theme.chart_gridcolor,
         row: {
           opacity: 0.5,
         },
@@ -119,14 +123,14 @@ export class MailamountgraphComponent implements OnInit{
         },
         labels: {
           style: {
-            colors: this.theme.axistextcolor,
+            colors: this.theme.chart_axistextcolor,
           },
         },
       },
       yaxis: {
         labels: {
           style: {
-            colors: this.theme.axistextcolor,
+            colors: this.theme.chart_axistextcolor,
           },
         },
       },
@@ -138,41 +142,49 @@ export class MailamountgraphComponent implements OnInit{
       },
     };
   }
-
-  //loading the data
   async loadChartData(): Promise<void> {
+    /*
     const today = new Date();
     const tenDaysAgo = new Date();
     tenDaysAgo.setDate(today.getDate() - 10);
-    
-    const labels = ['BI_ENGINEER', 'DATA_ENGINEER', 'IRRELEVANT'];
+    */
 
-    for (const label of labels) {
-      const labelData: LabelData = await this.data.getDataBetween(tenDaysAgo, today, label);
-      const datapoints: number[] = [];
-      // filling in the days is still janky -> change this by maybe making use of a json or interface or something
-      this.days = []
+    const responseData: LabelData = await this.data.getDataBetween(undefined, undefined);
+    let responseData_bi_eng: number[] = [];
+    let responseData_data_eng: number[] = [];
+    let responseData_irrelevant: number[] = [];
+    this.days = [];
 
-      // Update datapoints array with total for each day
-      labelData.data.forEach((dayData: DayData) => {
-        datapoints.push(dayData.total);
-        this.days.push(dayData.date);
-      });
+    responseData.data.forEach((dayData: DayData) => {
+      responseData_bi_eng.push(dayData.BI_ENGINEER);
+      responseData_data_eng.push(dayData.DATA_ENGINEER);
+      responseData_irrelevant.push(dayData.IRRELEVANT);
+      this.days.push(dayData.date);
+    });
 
-      // Update respective datapoints array based on label
-      switch (label) {
-        case 'BI_ENGINEER':
-          this.datapoints_bi_eng = datapoints;
-          break;
-        case 'DATA_ENGINEER':
-          this.datapoints_data_eng = datapoints;
-          break;
-        case 'IRRELEVANT':
-          this.datapoints_irrelevant = datapoints;
-          break;
-        default:
-          break;
-      }
-    }
+    this.datapoints_bi_eng = responseData_bi_eng;
+    this.datapoints_data_eng = responseData_data_eng;
+    this.datapoints_irrelevant = responseData_irrelevant;
   }
+
+  /*
+  //loading the data
+  async loadChartData(): Promise<void> {
+    this.datapoints = [];
+    this.days = [];
+  
+    const responseData: LabelData = await this.data.getDataBetween(undefined, undefined);
+  
+    responseData.data.forEach((dayData: DayData) => {
+      const transformedData = responseData.labels.map(label => ({
+        name: label.replace('_', ' ').toLowerCase(),
+        data: [Number(dayData[label as keyof DayData])]
+      }));
+      this.datapoints = transformedData;
+      console.log(this.datapoints);
+      this.days.push(dayData.date);
+      console.log(this.days);
+    });
+  }
+  */
 }

@@ -169,6 +169,10 @@ html {
 	-webkit-font-smoothing: antialiased;
 }
 
+.content > * {
+    color: var(--module-color-text);
+}
+
 .module {
 	background-color: var(--module-color-background);
 	border-radius: 1.5rem;

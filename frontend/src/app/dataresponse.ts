@@ -1,14 +1,17 @@
 export interface LabelData {
     data: DayData[];
     end_date: string;
-    label: string;
-    rating: number;
+    labels: string[];
+    rating: string;
     source: string;
     start_date: string;
+    total: number;
 }
 
 export interface DayData {
-    average_certainty: number;
+    BI_ENGINEER: number;
+    DATA_ENGINEER: number;
+    IRRELEVANT: number;
     average_processing_time: number;
     date: string;
     total: number;

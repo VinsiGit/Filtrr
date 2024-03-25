@@ -34,23 +34,23 @@ export class ThemeswitchComponent {
     //email amount chart
     ApexCharts.exec('mailAmountGraph', 'updateOptions', {
       chart: {
-        foreColor: this.theme.textcolor,
+        foreColor: this.theme.chart_textcolor,
       },
       colors: [this.theme.irrelevant_color, this.theme.label1color, this.theme.label2color],
       grid: {
-        borderColor: this.theme.gridcolor,
+        borderColor: this.theme.chart_gridcolor,
       },
       xaxis: {
         labels: {
           style: {
-            colors: this.theme.axistextcolor,
+            colors: this.theme.chart_axistextcolor,
           },
         },
       },
       yaxis: {
         labels: {
           style: {
-            colors: this.theme.axistextcolor,
+            colors: this.theme.chart_axistextcolor,
           },
         },
       },
@@ -58,7 +58,35 @@ export class ThemeswitchComponent {
     
     //paste-in response chart
     ApexCharts.exec('certaintyWheel', 'updateOptions', {
-      colors: [this.theme.label1color]
+      colors: [this.theme.label1color],
+      plotOptions: {
+        radialBar: {
+          hollow: {
+            background: this.theme.radial_backgroundcolor
+          },
+          track: {
+            background: this.theme.radial_trackcolor,
+            dropShadow: {
+              opacity: this.theme.shadowOpacity,
+              color: this.theme.shadowcolor
+            }
+          },
+          dataLabels: {
+            name: {
+              color: this.theme.radial_textcolor
+            },
+            value: {
+              color: this.theme.radial_textcolor
+            }
+          }
+        }
+      },
+      fill: {
+        gradient: {
+          shade: "light",
+          gradientToColors: [this.theme.label2color]
+        }
+      },
     }, true, true, true);
   }
 
@@ -77,14 +105,24 @@ export class ThemeswitchComponent {
       document.documentElement.style.setProperty('--module-color-border', '#312f51');
       document.documentElement.style.setProperty('--module-color-background', '#312f51');
       document.documentElement.style.setProperty('--module-color-text', '#7d7b8c');
+      document.documentElement.style.setProperty('--module-color-title', '#c1bed8');
       document.documentElement.style.setProperty('--module-color-highlight-complementary', '#f05365');
       document.documentElement.style.setProperty('--module-color-highlight-monochrome', '#7961f1');
-      this.theme.gridcolor = "#47426b";
-      this.theme.label1color = "#f05365";
-      this.theme.label2color = "#f5a623";
-      this.theme.textcolor = "#edf2f9";
-      this.theme.axistextcolor = "#8e8ea7";
+
       this.theme.irrelevant_color = "#47426b";
+      this.theme.label1color = "#f05365";
+      this.theme.label2color = "#f68e5f";
+
+      this.theme.shadowcolor = "rgba(0, 0, 0, 0.2)";
+      this.theme.shadowOpacity = 0.3;
+      
+      this.theme.chart_gridcolor = "#47426b";
+      this.theme.chart_textcolor = "#edf2f9";
+      this.theme.chart_axistextcolor = "#8e8ea7";
+    
+      this.theme.radial_textcolor = "#ffffff";
+      this.theme.radial_trackcolor = "#c1bed8";
+      this.theme.radial_backgroundcolor = "#47426b";
     } else {
       document.documentElement.style.setProperty('--shadow', '0px 1px 22px -12px #607D8B');
       document.documentElement.style.setProperty('--nav-color', '#f05964');
@@ -98,15 +136,25 @@ export class ThemeswitchComponent {
       document.documentElement.style.setProperty('--page-color-inactive', '#f0f4f8');
       document.documentElement.style.setProperty('--module-color-border', 'white');
       document.documentElement.style.setProperty('--module-color-background', 'white');
-      document.documentElement.style.setProperty('--module-color-text', '#46494c');
+      document.documentElement.style.setProperty('--module-color-text', '#80848b');
+      document.documentElement.style.setProperty('--module-color-title', '#46494c');
       document.documentElement.style.setProperty('--module-color-highlight-complementary', '#7a6ce4');
       document.documentElement.style.setProperty('--module-color-highlight-monochrome', '#f05365');
-      this.theme.gridcolor = "#f2f2f2";
+      
+      this.theme.irrelevant_color = "#dbdee4";
       this.theme.label1color = "#6460af";
       this.theme.label2color = "#b872de";
-      this.theme.textcolor = "#46494c";
-      this.theme.axistextcolor = "#8e8ea7";
-      this.theme.irrelevant_color = "#DBDEE4";
+      
+      this.theme.shadowcolor = "#607D8B";
+      this.theme.shadowOpacity = 0.1;
+      
+      this.theme.chart_gridcolor = "#f2f2f2";
+      this.theme.chart_textcolor = "#46494c";
+      this.theme.chart_axistextcolor = "#8e8ea7";
+    
+      this.theme.radial_textcolor = "#46494c";
+      this.theme.radial_trackcolor = "#F5F4FF";
+      this.theme.radial_backgroundcolor = "#ffffff";
     }
     //update chart colors
     this.updateCharts()
