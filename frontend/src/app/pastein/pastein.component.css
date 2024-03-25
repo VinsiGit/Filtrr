@@ -10,6 +10,7 @@ textarea {
     height: 100%;
     border: none;
     background-color: var(--module-color-background);
+    color: var(--page-color-text);
 }
 
 textarea:focus, input:focus{
@@ -28,10 +29,6 @@ textarea:focus, input:focus{
     border: 10px solid var(--module-color-border);
     font-family: monospace;
     width: 100%;
-}
-
-
-.content {
     color: var(--module-color-text);
 }
 
@@ -40,6 +37,7 @@ h1 {
     padding-top: 1.5rem;
     padding-bottom: 1.5rem;
     font-size: 3rem;
+    color: var(--module-color-title);
 }
 
 .content {

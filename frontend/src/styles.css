@@ -145,6 +145,7 @@ html {
 	transition: background-color 0.3s;
 }
 
+/* -> doesn't have to be here anymore but i'll keep this here for readability
 :root {
 	--shadow: 0px 1px 22px -12px #607D8B;
 	--nav-color: #f05964;
@@ -162,9 +163,14 @@ html {
 	--module-color-highlight-complementary: #7a6ce4;
 	--module-color-highlight-monochrome: #f05365;
 }
+*/
 
 * {
 	-webkit-font-smoothing: antialiased;
+}
+
+.content > * {
+    color: var(--module-color-text);
 }
 
 .module {

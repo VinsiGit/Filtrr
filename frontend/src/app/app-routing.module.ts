@@ -4,24 +4,34 @@ import { PasteinComponent } from './pastein/pastein.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SettingsComponent } from './settings/settings.component';
 import { RetrainComponent } from './retrain/retrain.component';
+import { LoginComponent } from './login/login.component';
+import { AuthGuard } from './auth.guard';
 
 
 const routes: Routes = [
   {
+    path: "login",
+    component: LoginComponent
+  },
+  {
     path: "dashboard",
-    component: DashboardComponent
+    component: DashboardComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: "paste-in",
-    component: PasteinComponent
+    component: PasteinComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: "settings",
-    component: SettingsComponent
+    component: SettingsComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: "retrain",
-    component: RetrainComponent
+    component: RetrainComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: "",

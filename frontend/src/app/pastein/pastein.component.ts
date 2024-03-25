@@ -52,12 +52,46 @@ export class PasteinComponent {
         plotOptions: {
           radialBar: {
             hollow: {
-              size: `60%`
-            }, 
+              margin: 0,
+              size: "65%",
+              background: this.theme.radial_backgroundcolor
+            },
             track: {
-              background: '#f0f4f8',
+              background: this.theme.radial_trackcolor,
+              dropShadow: {
+                enabled: true,
+                top: 1,
+                left: 1,
+                blur: 2,
+                opacity: this.theme.shadowOpacity,
+                color: this.theme.shadowcolor
+              }
+            },
+            dataLabels: {
+              name: {
+                offsetY: -10,
+                color: this.theme.radial_textcolor,
+                fontSize: "13px"
+              },
+              value: {
+                color: this.theme.radial_textcolor,
+                fontSize: "30px",
+                show: true
+              }
             }
           }
+        },
+        fill: {
+          type: "gradient",
+          gradient: {
+            shade: "dark",
+            type: "vertical",
+            gradientToColors: [this.theme.label2color],
+            stops: [0, 200]
+          }
+        },
+        stroke: {
+          lineCap: "round"
         },
         labels: [this.textBoxResponse.label]
       };
