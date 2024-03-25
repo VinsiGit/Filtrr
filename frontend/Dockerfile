@@ -8,13 +8,13 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install the dependencies
-RUN npm install
+RUN npm install --save --legacy-peer-deps
 
 # Copy the source code to the container
 COPY . .
 
 # Build the Angular app
-RUN npm run build
+RUN npm run build 
 
 # Use a lightweight image for the production environment
 FROM nginx:alpine as production

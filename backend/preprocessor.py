@@ -1,180 +1,97 @@
-from transformers import pipeline
-from googletrans import Translator
-
-import os
 import re
-
-import nltk
-from nltk.tokenize import word_tokenize
-from nltk.stem import WordNetLemmatizer
-from nltk.corpus import stopwords, words
+from nltk.corpus import stopwords
 
 class Preprocessor:
-    """
-    This class contains the basic preprocessor pipeline that's used to extract keywords themed around skills.
-
-    Attributes:
-        _dir_skill (str): The directory path where the skill preprocessor model is stored.
-        _dir_knowledge (str): The directory path where the knowledge preprocessor model is stored.
-        _window_size (int): The window size used in the preprocessor pipeline.
-        __words (set): Set of English words.
-        __lemmatizer (WordNetLemmatizer): Instance of WordNetLemmatizer for lemmatization.
-
-    Methods:
-        __init__: Initializes the Preprocessor class with default or user-specified parameters.
-        preprocess_input: Preprocesses input and gives skills & knowledge back.
-    """
-    def __init__(self, window_size: int = 8,
-                 preprocessor_dir_skill: str = "./preprocessor/skill/",
-                 preprocessor_dir_knowledge: str = "./preprocessor/knowledge/"):
+    def __init__(self):
         """
-        Initializes the Preprocessor class with default or user-specified parameters.
+        Initialize Preprocessor class with keywords and stopwords.
+        """
+        self.__keywords = [
+            'advanced', 'alm', 'analyst', 'analytical', 'analytics', 'api', 'app', 'application', 'architecture', 'arm',
+            'asset', 'automation', 'availability', 'azure', 'ba', 'bi', 'big', 'bnppf', 'c', 'cd', 'central', 'ci',
+            'cloud', 'cloudtrail', 'code', 'cognos', 'container', 'crisp', 'culture', 'customer', 'dashboard', 'data',
+            'databricks', 'dataiku', 'datalake', 'datasets', 'dax', 'db', 'dbt', 'deepdives', 'delta', 'design',
+            'desktop', 'developer', 'development', 'devops', 'dimensional', 'docker', 'dynamic', 'ecosystem', 'emr',
+            'engineer', 'environment', 'erp', 'etl', 'etp', 'excel', 'experience', 'factory', 'flow', 'flow', 'gen',
+            'git', 'governance', 'handling', 'high', 'hr', 'hub', 'ict', 'infrastructure', 'innovation', 'insight',
+            'integration', 'intelligence', 'interface', 'iot', 'java', 'kibana', 'lake', 'lambda', 'language', 'large',
+            'layer', 'learning', 'level', 'linux', 'm', 'machine', 'maintenance', 'management', 'manipulating', 'mart',
+            'master', 'medior', 'meeting', 'microsoft', 'migration', 'model', 'modeling', 'mongo', 'need', 'neo',
+            'operation', 'optimization', 'oracle', 'orchestration', 'package', 'paginated', 'panda', 'pipeline',
+            'platform', 'power', 'practice', 'preparation', 'processing', 'procurement', 'product', 'programming',
+            'project', 'qliksense', 'quality', 'querying', 'report', 'reporting', 'requirement', 'roadmap', 'row', 's3',
+            'sa', 'safe', 'sagemaker', 'scalable', 'security', 'semi', 'service', 'setup', 'shiny', 'signal', 'skill',
+            'solution', 'specialist', 'sql', 'ssis', 'ssms', 'stack', 'strategic', 'strategy', 'stream', 'structured',
+            'studio', 'synapse', 't', 'technique', 'technology', 'tool', 'toolkit', 'topdesk', 'topic', 'transform',
+            'transformation', 'ux', 'value', 'vault', 'visual', 'visualisation', 'visualization', 'visuals', 'vpc',
+            'warehouse', 'wifi', 'workspace', 'wph']
+        self.__english_stopwords = set(stopwords.words('english'))
+        self.__french_stopwords = set(stopwords.words('french'))
+        self.__dutch_stopwords = set(stopwords.words('dutch'))
+
+    def __get_tokens(self, text: str) -> str:
+        """
+        Tokenizes the given text.
 
         Args:
-            window_size (int): The window size used in the preprocessor pipeline. Default is 8.
-            preprocessor_dir_skill (str): The directory path where the skill preprocessor model is stored.
-                Default is "./preprocessor/skill/".
-            preprocessor_dir_knowledge (str): The directory path where the knowledge preprocessor model is stored.
-                Default is "./preprocessor/knowledge/".
-        """
-        self._window_size = window_size
-
-        self._dir_skill = preprocessor_dir_skill
-        self._dir_knowledge = preprocessor_dir_knowledge
-        self._skill_preprocessor = self.__load_model(dir=self._dir_skill, model_name="jjzha/jobbert_skill_extraction")
-        self._knowledge_preprocessor = self.__load_model(dir=self._dir_knowledge,
-                                                         model_name="jjzha/jobbert_knowledge_extraction")
-
-        # region Initialize NLTK resources
-        nltk.download('punkt', quiet=True)
-        nltk.download('stopwords', quiet=True)
-        nltk.download('wordnet', quiet=True)
-        nltk.download('words', quiet=True)
-        # endregion
-
-        self.__words = set(words.words('en') + stopwords.words('english'))
-        self.__lemmatizer = WordNetLemmatizer()
-
-    def __load_model(self, dir: str, model_name: str):
-        """
-        Loads a preprocessor model from the specified directory.
-
-        Args:
-            dir (str): The directory path where the preprocessor model is stored.
-            model_name (str): The name of the preprocessor model to load.
+        text (str): The text to tokenize.
 
         Returns:
-            object: The preprocessor model loaded from the specified directory.
+        list[str]: A list of tokens extracted from the text.
         """
-        if not os.path.exists(dir) or not os.listdir(dir):
-            token_classifier = pipeline(model=model_name, aggregation_strategy="first")
-            token_classifier.save_pretrained(dir)
-        return pipeline(model=dir, task="ner")
-
-    def __regex_privacy(self, text: str) -> str:
-        """
-        Applies regex patterns to remove privacy-sensitive information from text.
-
-        Args:
-            text (str): The input text.
-
-        Returns:
-            str: The text with privacy-sensitive information removed.
-        """
-        # Define regex patterns to remove privacy-sensitive information
-        patterns = [
-            r'\r',  # Remove carriage return
-            r'\n',  # Remove newline
-            r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)',
-            # Remove URLs
-            r'^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$',  # Remove phone numbers
-            r'\d',  # Remove digits
-            r'-',  # Remove hyphens
-            r'[\[\](){}<>]',  # Remove brackets and parentheses
-            r'[,.;:!?&+_\/]'  # Remove common punctuation
-        ]
-
-        # Apply each pattern to the text
-        for pattern in patterns:
+        for pattern in [r'\r', r'\n', r'[^A-Za-z0-9\s]', r'\s+']:
             text = re.sub(pattern, ' ', text)
-        return text
+        text = text.lower()
+        text = text.strip()
+        arr = text.split(' ')
+        return arr
 
-    def __clean_text(self, text: str) -> str:
+    def __get_interesting_tokens(self, tokens: list[str]) -> list[str]:
         """
-        Cleans the text by removing privacy-sensitive information and multiple spaces.
+        Filters tokens based on predefined keywords.
 
         Args:
-            text (str): The input text.
+        tokens (list[str]): List of tokens to filter.
 
         Returns:
-            str: The cleaned text.
+        list[str]: Filtered list of tokens containing only interesting tokens.
         """
-        text_multi_space = text.replace(' ', '_')
-        text_cleaned = self.__regex_privacy(text_multi_space)
-        return text_cleaned
+        interesting_tokens = []
+        for token in tokens:
+            for keyword in self.__keywords:
+                if token in keyword:
+                    interesting_tokens.append(token)
+        return list(set(interesting_tokens))
 
-    def __translate_to_english(self, text: str) -> str:
+    def __filter_stopwords(self, tokens: list[str]) -> list[str]:
         """
-        Translates text to English using Google Translate API.
+        Removes stopwords from the list of tokens.
 
         Args:
-            text (str): The input text.
+        tokens (list[str]): List of tokens to filter.
 
         Returns:
-            str: The translated text in English.
+        list[str]: Filtered list of tokens with stopwords removed.
         """
-        translator = Translator()
-        translated_text = translator.translate(text, src='auto', dest='en').text
-        return translated_text
+        tokens = [token for token in tokens if token not in self.__english_stopwords]
+        tokens = [token for token in tokens if token not in self.__french_stopwords]
+        tokens = [token for token in tokens if token not in self.__dutch_stopwords]
+        return tokens
 
-    def __tokenize(self, text: str) -> list[str]:
+    def preprocess(self, email: any) -> dict:
         """
-        Tokenizes, lemmatizes, and stems the text.
+        Preprocesses the text of an email by tokenizing, filtering based on keywords, and removing stopwords.
 
         Args:
-            text (str): The input text.
+        email (any): The email object containing text to preprocess.
 
         Returns:
-            list[str]: The list of tokens after tokenization & lemmatization.
-        """
-        tokens = word_tokenize(text.lower())
-        lemmatized_tokens = [self.__lemmatizer.lemmatize(token) for token in tokens]
-        filtered_tokens = [token for token in lemmatized_tokens if token not in self.__words]
-        return filtered_tokens
-
-    def preprocess(self, email: dict) -> dict:
-        """
-        Preprocesses the input email to extract skills and knowledge.
-        Args:
-            email (dict): The input email to be preprocessed.
-        Returns:
-            dict: A dictionary containing lists of dictionaries,
-                where each dictionary represents a skill or knowledge term with its corresponding score and type.
-                The dictionary has three keys: 'skill', 'knowledge', and 'keywords', each containing a list of dictionaries.
+        list[str]: Preprocessed tokens sorted alphabetically.
         """
         text = email.get('text_body', '')
-        clean_text = self.__clean_text(text)
-        text_en = self.__translate_to_english(clean_text)
-        text_en_clean = self.__clean_text(text_en)
-        tokens = self.__tokenize(text_en_clean)
-
-        unique_tokens = list(set(tokens))
-
-        # Process tokens using skill_preprocessor
-        skill_output = [self._skill_preprocessor(' '.join(tokens[i - self._window_size:i + self._window_size])) for i in
-                        range(self._window_size, len(tokens), self._window_size)]
-        transformed_skill_output = [{'word': item['word'], 'type': 'skill'} for sublist in skill_output for item in
-                                    sublist if sublist]
-
-        # Process tokens using knowledge_preprocessor
-        knowledge_output = [self._knowledge_preprocessor(' '.join(tokens[i - self._window_size:i + self._window_size]))
-                            for i in range(self._window_size, len(tokens), self._window_size)]
-        transformed_knowledge_output = [{'word': item['word'], 'type': 'knowledge'} for sublist in knowledge_output for
-                                        item in sublist if sublist]
-
-        email['skill'] = transformed_skill_output
-        email['knowledge'] = transformed_knowledge_output
-        email['keywords'] = unique_tokens
-        email['rating'] = None
-
+        tokens = self.__get_tokens(text)
+        interesting_tokens = self.__get_interesting_tokens(tokens)
+        preprocessed_tokens = self.__filter_stopwords(interesting_tokens)
+        preprocessed_tokens.sort()
+        email['keywords'] = preprocessed_tokens
         return email

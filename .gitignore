@@ -1,4 +1,5 @@
 venv/
 preprocessor
 *.sh
-main
+data_extract.json
+output.txt
