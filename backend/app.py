@@ -278,6 +278,8 @@ def get_data():
             for label in unique_labels:
                 json_result[-1][label] = 0
         current_date += timedelta(days=1)
+    
+    json_result = sorted(json_result, key=lambda x: x['date'])
 
     report = {
         "start_date": start_date.strftime('%Y-%m-%d'),
