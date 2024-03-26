@@ -28,7 +28,7 @@ def hash_input(input):
 
 
 # Get the MongoDB connection details from environment variables
-mongo_host = e.get('MONGO_HOST', 'db') # 'db' is the default name of the MongoDB service within the Docker network TODO: change to localhost for local development 
+mongo_host = e.get('MONGO_HOST', 'localhost') # 'db' is the default name of the MongoDB service within the Docker network TODO: change to localhost for local development 
 mongo_port = int(e.get('MONGO_PORT', '27017'))
 mongo_username = e.get('MONGO_USERNAME', 'root')
 mongo_password = e.get('MONGO_PASSWORD', 'mongo')
@@ -208,10 +208,10 @@ def get_data():
     else:
         first_mail = db.mails.find_one()
         if first_mail:
-            start_date = first_mail['date'] 
+            start_date = first_mail['date'].replace(hour=0, minute=0, second=0) 
         else:
-            start_date = datetime.now()
-        end_date = datetime.now()
+            start_date = datetime.now().replace(hour=0, minute=0, second=0)
+        end_date = datetime.now().replace(hour=23, minute=59, second=59)
 
 
     # Add filters to the query if they are specified
@@ -254,11 +254,10 @@ def get_data():
     pipeline = [
         {"$match": query},
         group_stage,
-        {"$sort": {"_id": 1}},
         {"$addFields": {"date": "$_id" }},
         {"$project": {"_id": 0} }
     ]
-        
+    
 
     # Execute the aggregation query
     count = db.mails.count_documents(query)
@@ -267,6 +266,18 @@ def get_data():
     # Convert the results to a list of dicts
     json_result = list(results)
 
+    current_date = start_date
+    while current_date <= end_date:
+        date_str = current_date.strftime('%Y-%m-%d')
+        if not any(item['date'] == date_str for item in json_result):
+            json_result.append({
+                "date": date_str,
+                "total": 0,
+                "average_processing_time": 0
+            })
+            for label in unique_labels:
+                json_result[-1][label] = 0
+        current_date += timedelta(days=1)
 
     report = {
         "start_date": start_date.strftime('%Y-%m-%d'),
