@@ -7,23 +7,8 @@ class Preprocessor:
         Initialize Preprocessor class with keywords and stopwords.
         """
         self.__keywords = [
-            'advanced', 'alm', 'analyst', 'analyse', 'api', 'app', 'application', 'architecture', 'arm',
-            'asset', 'automation', 'aws', 'azure', 'ba', 'bi', 'big', 'bnppf', 'c', 'cd', 'central', 'ci',
-            'cloud', 'code', 'cognos', 'container', 'crisp', 'culture', 'customer', 'dashboard', 'data',
-            'databricks', 'datalake', 'datasets', 'dax', 'db', 'dbt', 'deepdive', 'delta', 'design',
-            'desktop', 'develop', 'devops', 'dimensional', 'docker', 'dynamic', 'ecosystem', 'emr',
-            'engineer', 'environment', 'erp', 'etl', 'etp', 'excel', 'experience', 'factory', 'flow', 'flow', 'gen',
-            'git', 'govern', 'handle', 'hr', 'hub', 'ict', 'infrastructure', 'innovation', 'insight',
-            'integration', 'intelligence', 'interface', 'iot', 'java', 'kibana', 'lake', 'lambda', 'language', 'large',
-            'layer', 'learn', 'level', 'linux', 'ms', 'machine', 'maintain', 'manage', 'manipulate', 'mart',
-            'microsoft', 'migrate', 'model', 'mongo', 'neo', 'operation', 'optimization', 'oracle', 'orchestrate', 'package',
-            'paginated', 'panda', 'pipeline', 'platform', 'power', 'practice', 'prepare', 'process', 'procure', 'product', 'program',
-            'project', 'qliksense', 'quality', 'query', 'report', 'requirement', 'roadmap', 'row', 's3',
-            'safe', 'sagemaker', 'scalable', 'security', 'semi', 'service', 'setup', 'shiny', 'signal', 'skill',
-            'solution', 'specialist', 'sql', 'ssis', 'ssms', 'stack', 'strategic', 'strategy', 'stream', 'structured',
-            'studio', 'synapse', 'tech', 'tool', 'kit', 'topdesk', 'transform', 'ux', 'value', 'vault', 'visual',
-            'vpc', 'warehouse', 'wifi', 'workspace', 'wph', 'olap', 'oltp']
-        self.__english_stopwords = set(stopwords.words('english'))
+         'advanced', 'alm', 'analyst', 'analytical', 'analytics', 'api', 'app', 'application', 'architecture', 'arm', 'asset', 'automation', 'availability', 'azure', 'ba', 'bi', 'big', 'bnppf', 'c', 'cd', 'central', 'ci', 'cloud', 'cloudtrail', 'code', 'cognos', 'container', 'crisp', 'culture', 'customer', 'dashboard', 'data', 'databricks', 'dataiku', 'datalake', 'datasets', 'dax', 'db', 'dbt', 'deepdives', 'delta', 'design', 'desktop', 'developer', 'development', 'devops', 'dimensional', 'docker', 'dynamic', 'ecosystem', 'emr', 'engineer', 'environment', 'erp', 'etl', 'etp', 'excel', 'experience', 'factory', 'flow', 'flow', 'gen', 'git', 'governance', 'handling', 'high', 'hr', 'hub', 'ict', 'infrastructure', 'innovation', 'insight', 'integration', 'intelligence', 'interface', 'iot', 'java', 'kibana', 'lake', 'lambda', 'language', 'large', 'layer', 'learning', 'level', 'linux', 'm', 'machine', 'maintenance', 'management', 'manipulating', 'mart', 'master', 'medior', 'meeting', 'microsoft', 'migration', 'model', 'modeling', 'mongo', 'need', 'neo', 'operation', 'optimization', 'oracle', 'orchestration', 'package', 'paginated', 'panda', 'pipeline', 'platform', 'power', 'practice', 'preparation', 'processing', 'procurement', 'product', 'programming', 'project', 'qliksense', 'quality', 'querying', 'report', 'reporting', 'requirement', 'roadmap', 'row', 's3', 'sa', 'safe', 'sagemaker', 'scalable', 'security', 'semi', 'service', 'setup', 'shiny', 'signal', 'skill', 'solution', 'specialist', 'sql', 'ssis', 'ssms', 'stack', 'strategic', 'strategy', 'stream', 'structured', 'studio', 'synapse', 't', 'technique', 'technology', 'tool', 'toolkit', 'topdesk', 'topic', 'transform', 'transformation', 'ux', 'value', 'vault', 'visual', 'visualisation', 'visualization', 'visuals', 'vpc', 'warehouse', 'wifi', 'workspace', 'wph']
+        self.__english_stopwords= set(stopwords.words('english'))
         self.__french_stopwords = set(stopwords.words('french'))
         self.__dutch_stopwords = set(stopwords.words('dutch'))
 
@@ -75,6 +60,9 @@ class Preprocessor:
         tokens = [token for token in tokens if token not in self.__french_stopwords]
         tokens = [token for token in tokens if token not in self.__dutch_stopwords]
         return tokens
+
+    def get_keywords(self):
+        return self.__keywords
 
     def preprocess(self, email: any) -> dict:
         """

@@ -3,4 +3,4 @@ preprocessor
 *.sh
 *.json
 output.txt
-backend/ai_model/preprocessor.py
+models/
