@@ -1,19 +1,20 @@
 // src/app/login/login.component.ts
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { HttpClient } from '@angular/common/http';
+import { PagetitleService } from '../pagetitle.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit{
   username: string = '';
   password: string = '';
   errorMessage: string = '';
 
-  constructor(private auth: AuthService, private http: HttpClient) {
+  constructor(private auth: AuthService, private http: HttpClient, private title: PagetitleService) {
     const accessToken = localStorage.getItem('access_token');
     if (accessToken) {
       // Call API to check if token is valid
@@ -45,5 +46,9 @@ export class LoginComponent {
         console.error('Login error', error);
       }
     });
+  }
+
+  ngOnInit(){
+    this.title.pageTitle = "login";
   }
 }

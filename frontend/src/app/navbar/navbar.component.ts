@@ -19,6 +19,10 @@ export class NavbarComponent implements OnInit {
     return this.title.pageTitle;
   }
 
+  get isLoggedIn() {
+    return this.auth.isLoggedIn;
+  }
+
   logout() {
     this.auth.logout();
   }
