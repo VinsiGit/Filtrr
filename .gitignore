@@ -1,5 +1,6 @@
 venv/
 preprocessor
 *.sh
-data_extract.json
+*.json
 output.txt
+models/
